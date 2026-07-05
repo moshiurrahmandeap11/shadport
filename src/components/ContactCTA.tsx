@@ -75,7 +75,7 @@ export default function ContactCTA() {
   ];
 
   return (
-    <section ref={sectionRef} id="contact" className="relative py-16 sm:py-20 lg:py-28 bg-background mb-[-100px] sm:mb-[-150px] lg:mb-[-200px]">
+    <section ref={sectionRef} id="contact" className="relative py-16 sm:py-20 lg:py-36 bg-background mb-[-100px] sm:mb-[-150px] lg:mb-[-200px]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div
           ref={contentRef}
