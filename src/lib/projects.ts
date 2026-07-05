@@ -1,4 +1,18 @@
-export const projects = [
+export interface Project {
+  id: number;
+  title: string;
+  slug: string;
+  short_description: string;
+  descriptioin: string;
+  techStack: string[];
+  features: string[];
+  challenges: string[];
+  learnings: string[];
+  links: { name: string; url: string }[];
+  screenshots: string[];
+}
+
+export const projects: Project[] = [
   {
     id: 1,
     title: "BookShelf",
