@@ -12,7 +12,7 @@ const navItems = [
   { id: 2, label: "About", path: "/#about", scrollTo: "about" },
   { id: 3, label: "Contact", path: "/#contact", scrollTo: "contact" },
   { id: 4, label: "Projects", path: "/#works", scrollTo: "works" },
-  { id: 5, label: "Blog", path: "/blog" },
+  { id: 5, label: "Blogs", path: "/blogs" },
 ];
 
 export default function Navbar() {
@@ -53,18 +53,24 @@ export default function Navbar() {
   const activeTheme = theme === "system" ? resolvedTheme : theme;
   const isDark = activeTheme === "dark";
 
-  const handleNavClick = (scrollTo: string | undefined) => {
-    if (!scrollTo) return;
-    
+  const handleNavClick = (item: { scrollTo?: string; path?: string }) => {
     setMenuOpen(false);
     setMobileMenuOpen(false);
     
-    if (scrollTo === "top") {
+    // If it's a page navigation (like /blogs), use router
+    if (item.path && !item.scrollTo) {
+      window.location.href = item.path;
+      return;
+    }
+    
+    if (!item.scrollTo) return;
+    
+    if (item.scrollTo === "top") {
       window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
     
-    const element = document.getElementById(scrollTo);
+    const element = document.getElementById(item.scrollTo);
     if (element) {
       const offset = 80; // navbar height offset
       const elementPosition = element.getBoundingClientRect().top + window.scrollY;
@@ -207,7 +213,7 @@ export default function Navbar() {
                       transition={{ delay: 0.1 + i * 0.08, duration: 0.4 }}
                     >
                       <button
-                        onClick={() => handleNavClick(item.scrollTo)}
+                        onClick={() => handleNavClick(item)}
                         className="flex items-center justify-between w-full py-4 text-2xl font-bold text-foreground border-b border-foreground/10 text-left"
                       >
                         <span>{item.label}</span>
@@ -219,7 +225,7 @@ export default function Navbar() {
 
                 <div className="mt-auto flex flex-col gap-4">
                   <button
-                    onClick={() => handleNavClick("contact")}
+                    onClick={() => handleNavClick({ scrollTo: "contact" })}
                     className="flex items-center justify-center gap-2 rounded-full bg-foreground px-6 py-4 text-base font-bold text-background"
                   >
                     <span>Let&apos;s Talk</span>
@@ -378,7 +384,7 @@ export default function Navbar() {
                       ref={(el) => {
                         itemRefs.current[i] = el;
                       }}
-                      onClick={() => handleNavClick(item.scrollTo)}
+                      onClick={() => handleNavClick(item)}
                       className="group/item relative flex items-center justify-between overflow-hidden rounded-xl px-5 py-3 text-sm font-semibold text-foreground transition-all hover:bg-foreground/10 text-left w-full"
                     >
                       <span className="relative z-10">{item.label}</span>
@@ -480,7 +486,7 @@ export default function Navbar() {
               </a>
 
               <button
-                onClick={() => handleNavClick("contact")}
+                onClick={() => handleNavClick({ scrollTo: "contact" })}
                 className="group hidden lg:inline-flex items-center gap-2 rounded-full bg-foreground px-4 xl:px-5 py-2 text-sm font-semibold text-background transition-all hover:opacity-90 hover:scale-105"
               >
                 <span>Let&apos;s Talk</span>
