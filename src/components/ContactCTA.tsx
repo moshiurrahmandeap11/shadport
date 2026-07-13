@@ -3,7 +3,10 @@
 import { useRef, useEffect, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Send, Mail, Phone, MapPin, CheckCircle } from "lucide-react";
+import { Send, Mail, Phone, MapPin, Loader2 } from "lucide-react";
+import toast from "react-hot-toast";
+
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080/api";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -11,7 +14,6 @@ export default function ContactCTA() {
   const sectionRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
-  const [showToast, setShowToast] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -36,31 +38,67 @@ export default function ContactCTA() {
     return () => ctx.revert();
   }, []);
 
-  // Auto-hide toast after 3 seconds
-  useEffect(() => {
-    if (showToast) {
-      const timer = setTimeout(() => setShowToast(false), 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [showToast]);
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name || !formData.email || !formData.message) return;
+    if (!formData.name || !formData.email || !formData.message) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      toast.error("Please enter a valid email address");
+      return;
+    }
+
+    // Name validation
+    if (formData.name.length < 2) {
+      toast.error("Name must be at least 2 characters");
+      return;
+    }
+
+    // Message validation
+    if (formData.message.length < 10) {
+      toast.error("Message must be at least 10 characters");
+      return;
+    }
 
     setIsSubmitting(true);
 
-    // Send email via mailto link
-    const subject = `Message from ${formData.name} - Portfolio Contact`;
-    const body = `Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`;
-    const mailtoLink = `mailto:moshiurrahmandeap@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    
-    window.open(mailtoLink, "_blank");
+    const toastId = toast.loading("Sending your message...");
 
-    // Show toast
-    setShowToast(true);
-    setFormData({ name: "", email: "", message: "" });
-    setIsSubmitting(false);
+    try {
+      const res = await fetch(`${API_BASE}/contacts`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: formData.name.trim(),
+          email: formData.email.trim().toLowerCase(),
+          message: formData.message.trim(),
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "Failed to send message");
+      }
+
+      toast.success(data.message || "Message sent! Check your email for a confirmation.", {
+        id: toastId,
+        duration: 5000,
+      });
+
+      setFormData({ name: "", email: "", message: "" });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Something went wrong";
+      toast.error(message, { id: toastId });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -106,6 +144,7 @@ export default function ContactCTA() {
                     value={formData.name}
                     onChange={handleChange}
                     required
+                    minLength={2}
                     className="w-full px-4 py-3 sm:py-4 rounded-lg sm:rounded-xl bg-transparent border border-foreground/20 text-foreground placeholder:text-foreground/40 text-sm focus:outline-none focus:border-foreground/40 transition-colors"
                   />
                   <input
@@ -124,6 +163,7 @@ export default function ContactCTA() {
                   value={formData.message}
                   onChange={handleChange}
                   required
+                  minLength={10}
                   rows={5}
                   className="w-full px-4 py-3 sm:py-4 rounded-lg sm:rounded-xl bg-transparent border border-foreground/20 text-foreground placeholder:text-foreground/40 text-sm focus:outline-none focus:border-foreground/40 transition-colors resize-none"
                 />
@@ -131,10 +171,14 @@ export default function ContactCTA() {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 bg-foreground text-background text-sm font-medium rounded-lg hover:bg-foreground/90 transition-colors disabled:opacity-50"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 bg-foreground text-background text-sm font-medium rounded-lg hover:bg-foreground/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <Send className="w-4 h-4" />
-                    Send Message
+                    {isSubmitting ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Send className="w-4 h-4" />
+                    )}
+                    {isSubmitting ? "Sending..." : "Send Message"}
                   </button>
                 </div>
               </form>
@@ -200,19 +244,6 @@ export default function ContactCTA() {
           </div>
         </div>
       </div>
-
-      {/* Toast Notification */}
-      {showToast && (
-        <div className="fixed bottom-6 right-6 z-50 animate-in slide-in-from-bottom-2 fade-in duration-300">
-          <div className="flex items-center gap-3 px-5 py-3 rounded-xl bg-foreground text-background shadow-lg border border-foreground/10">
-            <CheckCircle className="w-5 h-5 text-green-400" />
-            <div>
-              <p className="text-sm font-medium">Message sent!</p>
-              <p className="text-xs text-background/70">Opening your email client...</p>
-            </div>
-          </div>
-        </div>
-      )}
     </section>
   );
 }
