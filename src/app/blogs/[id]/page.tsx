@@ -71,7 +71,7 @@ export async function generateMetadata({
         siteName: "Moshiur Rahman DEAP - Full Stack Developer",
         images: [
           {
-            url: blog.thumbnail.url,
+            url: blog.thumbnail?.url || "/og_image.png",
             width: 1200,
             height: 630,
             alt: blog.title,
@@ -83,7 +83,7 @@ export async function generateMetadata({
         site: "@moshiurrahman",
         title,
         description,
-        images: [blog.thumbnail.url],
+        images: [blog.thumbnail?.url || "/og_image.png"],
         creator: "@moshiurrahman",
       },
       alternates: {
@@ -110,10 +110,15 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
     const blog = response.data;
 
     // Fetch related blogs (other blogs excluding current one)
-    const allBlogsResponse = await fetchBlogs(1);
-    const relatedBlogs = allBlogsResponse.data
-      .filter((b) => b._id !== id)
-      .slice(0, 3);
+    let relatedBlogs: any[] = [];
+    try {
+      const allBlogsResponse = await fetchBlogs(1);
+      relatedBlogs = allBlogsResponse.data
+        .filter((b) => b._id !== id)
+        .slice(0, 3);
+    } catch {
+      relatedBlogs = [];
+    }
 
     const jsonLd = {
       "@context": "https://schema.org",
@@ -123,7 +128,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
       description: blog.description,
       image: {
         "@type": "ImageObject",
-        url: blog.thumbnail.url,
+        url: blog.thumbnail?.url || "https://moshiurrahman.online/og_image.png",
         width: 1200,
         height: 630,
       },

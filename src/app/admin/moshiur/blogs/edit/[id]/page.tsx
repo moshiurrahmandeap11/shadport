@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { ArrowLeft, Save, ImageIcon, Video } from "lucide-react";
 import toast from "react-hot-toast";
+import QuillEditor, { QuillEditorRef } from "@/components/editor/QuillEditor";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080/api";
 
@@ -19,14 +20,16 @@ interface Blog {
 export default function EditBlogPage() {
   const params = useParams();
   const router = useRouter();
+  const editorRef = useRef<QuillEditorRef>(null);
   const id = params.id as string;
 
   const [formData, setFormData] = useState({
     title: "",
     author: "",
     description: "",
-    content: "",
   });
+  const [editorContent, setEditorContent] = useState("");
+  const [initialContent, setInitialContent] = useState("");
   const [thumbnail, setThumbnail] = useState<File | null>(null);
   const [media, setMedia] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -46,8 +49,9 @@ export default function EditBlogPage() {
           title: blog.title,
           author: blog.author,
           description: blog.description || "",
-          content: blog.content,
         });
+        setInitialContent(blog.content);
+        setEditorContent(blog.content);
       }
     } catch {
       toast.error("Failed to fetch blog");
@@ -56,8 +60,13 @@ export default function EditBlogPage() {
     }
   }
 
+  const handleEditorChange = useCallback((content: string) => {
+    setEditorContent(content);
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const content = editorRef.current?.getContent() || editorContent;
     setIsSubmitting(true);
     const toastId = toast.loading("Updating blog...");
 
@@ -65,8 +74,8 @@ export default function EditBlogPage() {
       const data = new FormData();
       data.append("title", formData.title);
       data.append("author", formData.author);
-      data.append("description", formData.description || formData.content.substring(0, 150));
-      data.append("content", formData.content);
+      data.append("description", formData.description || content.replace(/<[^>]*>/g, "").substring(0, 150));
+      data.append("content", content);
       if (thumbnail) data.append("thumbnail", thumbnail);
       if (media) data.append("media", media);
 
@@ -95,7 +104,7 @@ export default function EditBlogPage() {
   }
 
   return (
-    <div className="space-y-6 max-w-3xl">
+    <div className="space-y-6 max-w-4xl">
       <div className="flex items-center gap-4">
         <Link
           href="/admin/moshiur/blogs"
@@ -142,14 +151,16 @@ export default function EditBlogPage() {
           />
         </div>
 
+        {/* Rich Text Content - Quill */}
         <div>
-          <label className="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">Content</label>
-          <textarea
-            value={formData.content}
-            onChange={(e) => setFormData((p) => ({ ...p, content: e.target.value }))}
-            required
-            rows={10}
-            className="w-full px-4 py-3 rounded-xl bg-[#0a0f1e] border border-[#1f2937] text-white text-sm focus:outline-none focus:border-[#f97316] transition-colors resize-none"
+          <label className="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">
+            Content
+          </label>
+          <QuillEditor
+            ref={editorRef}
+            defaultValue={initialContent}
+            placeholder="Write your blog content here..."
+            onChange={handleEditorChange}
           />
         </div>
 

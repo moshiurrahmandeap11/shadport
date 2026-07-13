@@ -42,7 +42,7 @@ export interface BlogResponse {
   data: Blog;
 }
 
-const API_BASE = "https://server-portfolio-flame.vercel.app/api";
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080/api";
 
 export async function fetchBlogs(page = 1): Promise<BlogsResponse> {
   const res = await fetch(`${API_BASE}/blogs?page=${page}`, {

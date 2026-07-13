@@ -1,28 +1,35 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import Link from "next/link";
 import { ArrowLeft, Plus, ImageIcon, Video } from "lucide-react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import QuillEditor, { QuillEditorRef } from "@/components/editor/QuillEditor";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080/api";
 
 export default function NewBlogPage() {
   const router = useRouter();
+  const editorRef = useRef<QuillEditorRef>(null);
   const [formData, setFormData] = useState({
     title: "",
     author: "Moshiur Rahman",
     description: "",
-    content: "",
   });
+  const [editorContent, setEditorContent] = useState("");
   const [thumbnail, setThumbnail] = useState<File | null>(null);
   const [media, setMedia] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const handleEditorChange = useCallback((content: string) => {
+    setEditorContent(content);
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.title || !formData.content || !formData.author) {
+    const content = editorRef.current?.getContent() || editorContent;
+    if (!formData.title || !content || !formData.author) {
       toast.error("Title, content and author are required");
       return;
     }
@@ -34,8 +41,8 @@ export default function NewBlogPage() {
       const data = new FormData();
       data.append("title", formData.title);
       data.append("author", formData.author);
-      data.append("description", formData.description || formData.content.substring(0, 150));
-      data.append("content", formData.content);
+      data.append("description", formData.description || content.replace(/<[^>]*>/g, "").substring(0, 150));
+      data.append("content", content);
       if (thumbnail) data.append("thumbnail", thumbnail);
       if (media) data.append("media", media);
 
@@ -56,7 +63,7 @@ export default function NewBlogPage() {
   };
 
   return (
-    <div className="space-y-6 max-w-3xl">
+    <div className="space-y-6 max-w-4xl">
       {/* Header */}
       <div className="flex items-center gap-4">
         <Link
@@ -117,18 +124,16 @@ export default function NewBlogPage() {
           />
         </div>
 
-        {/* Content */}
+        {/* Rich Text Content - Quill */}
         <div>
           <label className="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">
             Content
           </label>
-          <textarea
-            value={formData.content}
-            onChange={(e) => setFormData((p) => ({ ...p, content: e.target.value }))}
+          <QuillEditor
+            ref={editorRef}
+            defaultValue=""
             placeholder="Write your blog content here..."
-            required
-            rows={10}
-            className="w-full px-4 py-3 rounded-xl bg-[#0a0f1e] border border-[#1f2937] text-white placeholder:text-gray-600 text-sm focus:outline-none focus:border-[#f97316] transition-colors resize-none"
+            onChange={handleEditorChange}
           />
         </div>
 

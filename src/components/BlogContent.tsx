@@ -6,7 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
 import Link from "next/link";
 import { Blog, formatDate, estimateReadTime } from "@/lib/blogs";
-import { ArrowLeft, Calendar, Clock, ArrowUpRight } from "lucide-react";
+import { ArrowLeft, Calendar, Clock, ArrowUpRight, Share2, Bookmark } from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -25,14 +25,12 @@ export default function BlogContent({ blog, relatedBlogs = [] }: BlogContentProp
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Hero animation
       gsap.fromTo(
         heroRef.current,
         { opacity: 0, y: 30 },
         { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }
       );
 
-      // Title animation
       if (titleRef.current) {
         gsap.fromTo(
           titleRef.current,
@@ -41,11 +39,10 @@ export default function BlogContent({ blog, relatedBlogs = [] }: BlogContentProp
         );
       }
 
-      // Content paragraphs stagger
       if (contentRef.current) {
-        const paragraphs = contentRef.current.querySelectorAll("p, h1, h2, h3, h4, ul, ol, blockquote, div > div");
+        const elements = contentRef.current.querySelectorAll("p, h1, h2, h3, h4, ul, ol, blockquote, pre, img, video, .ql-align-center, .ql-align-right");
         gsap.fromTo(
-          paragraphs,
+          elements,
           { opacity: 0, y: 30 },
           {
             opacity: 1,
@@ -62,7 +59,6 @@ export default function BlogContent({ blog, relatedBlogs = [] }: BlogContentProp
         );
       }
 
-      // Related blogs animation
       if (relatedRef.current) {
         const cards = relatedRef.current.querySelectorAll(".related-card");
         gsap.fromTo(
@@ -87,8 +83,21 @@ export default function BlogContent({ blog, relatedBlogs = [] }: BlogContentProp
     return () => ctx.revert();
   }, [blog]);
 
-  // Process content to enhance media
-  const processedContent = enhanceMediaInContent(blog.content);
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: blog.title,
+          text: blog.description,
+          url: window.location.href,
+        });
+      } catch {
+        // User cancelled
+      }
+    } else {
+      await navigator.clipboard.writeText(window.location.href);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -102,10 +111,19 @@ export default function BlogContent({ blog, relatedBlogs = [] }: BlogContentProp
             <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
             Back to Blogs
           </Link>
-          <div className="flex items-center gap-2 text-sm text-foreground/40">
-            <span>Blogs</span>
-            <span>/</span>
-            <span className="text-foreground/70 truncate max-w-[150px]">{blog.title}</span>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleShare}
+              className="p-2 rounded-lg text-foreground/40 hover:text-foreground hover:bg-foreground/5 transition-colors"
+              title="Share"
+            >
+              <Share2 className="w-4 h-4" />
+            </button>
+            <div className="flex items-center gap-2 text-sm text-foreground/40">
+              <span>Blogs</span>
+              <span>/</span>
+              <span className="text-foreground/70 truncate max-w-[150px]">{blog.title}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -114,7 +132,7 @@ export default function BlogContent({ blog, relatedBlogs = [] }: BlogContentProp
       <div ref={heroRef} className="pt-24 pb-8 sm:pt-32 sm:pb-12">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           {/* Meta info */}
-          <div className="flex items-center gap-4 mb-6 text-sm text-foreground/50">
+          <div className="flex flex-wrap items-center gap-4 mb-6 text-sm text-foreground/50">
             <span className="flex items-center gap-1.5">
               <Calendar className="w-4 h-4" />
               {formatDate(blog.createdAt)}
@@ -175,8 +193,8 @@ export default function BlogContent({ blog, relatedBlogs = [] }: BlogContentProp
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <div
             ref={contentRef}
-            className="prose prose-lg dark:prose-invert max-w-none blog-content"
-            dangerouslySetInnerHTML={{ __html: processedContent }}
+            className="prose prose-lg dark:prose-invert max-w-none blog-content rich-text-content"
+            dangerouslySetInnerHTML={{ __html: blog.content }}
           />
         </div>
       </div>
@@ -189,7 +207,7 @@ export default function BlogContent({ blog, relatedBlogs = [] }: BlogContentProp
               Related Blogs
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {relatedBlogs.slice(0, 3).map((relatedBlog, index) => (
+              {relatedBlogs.slice(0, 3).map((relatedBlog) => (
                 <Link
                   key={relatedBlog._id}
                   href={`/blogs/${relatedBlog._id}`}
@@ -227,27 +245,4 @@ export default function BlogContent({ blog, relatedBlogs = [] }: BlogContentProp
       )}
     </div>
   );
-}
-
-// Helper function to enhance media in HTML content
-function enhanceMediaInContent(content: string): string {
-  // Replace video URLs with video tags
-  let enhanced = content.replace(
-    /(https?:\/\/[^\s"<>]+\.(mp4|webm|ogg))(?!\w)/gi,
-    (match) => `<video src="${match}" controls class="w-full rounded-xl my-6" preload="metadata"></video>`
-  );
-
-  // Replace GIF URLs with optimized img tags
-  enhanced = enhanced.replace(
-    /(https?:\/\/[^\s"<>]+\.(gif))(?!\w)/gi,
-    (match) => `<img src="${match}" alt="GIF" class="w-full rounded-xl my-6" loading="lazy" />`
-  );
-
-  // Replace PDF URLs with embed or link
-  enhanced = enhanced.replace(
-    /(https?:\/\/[^\s"<>]+\.(pdf))(?!\w)/gi,
-    (match) => `<div class="my-6"><a href="${match}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-foreground/10 text-foreground hover:bg-foreground/20 transition-colors"><svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>Download PDF</a></div>`
-  );
-
-  return enhanced;
 }

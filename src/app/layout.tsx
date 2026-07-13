@@ -87,7 +87,7 @@ export const metadata: Metadata = {
       "Hire Moshiur Rahman DEAP - Top-rated Full Stack Developer in Bangladesh specializing in MERN Stack, Next.js, React.js, Node.js. Best developer on Fiverr & LinkedIn.",
     images: [
       {
-        url: "/opengraph-image",
+        url: "/og_image.png",
         width: 1200,
         height: 630,
         alt: "Moshiur Rahman DEAP - Full Stack Developer Portfolio",
@@ -100,7 +100,7 @@ export const metadata: Metadata = {
     title: "Moshiur Rahman DEAP | Best Full Stack Developer in Bangladesh & Fiverr",
     description:
       "Hire Moshiur Rahman DEAP - Top-rated Full Stack Developer in Bangladesh specializing in MERN Stack, Next.js, React.js, Node.js.",
-    images: ["/twitter-image"],
+    images: ["/og_image.png"],
     creator: "@moshiurrahman",
   },
   alternates: {
@@ -142,7 +142,7 @@ export default function RootLayout({
                   name: "Moshiur Rahman DEAP",
                   alternateName: ["Moshiur Rahman", "Moshiur Rahman Developer", "Moshiur Rahman DEAP Developer"],
                   url: "https://moshiurrahman.online",
-                  image: "https://moshiurrahman.online/opengraph-image",
+                  image: "https://moshiurrahman.online/og_image.png",
                   jobTitle: "Full Stack Developer",
                   description:
                     "Best Full Stack Developer in Bangladesh specializing in MERN Stack, Next.js, React.js, Node.js. Top-rated developer on Fiverr and LinkedIn.",
@@ -206,7 +206,7 @@ export default function RootLayout({
                   },
                   primaryImageOfPage: {
                     "@type": "ImageObject",
-                    url: "https://moshiurrahman.online/opengraph-image",
+                    url: "https://moshiurrahman.online/og_image.png",
                   },
                 },
               ],
