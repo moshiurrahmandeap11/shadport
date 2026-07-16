@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { fetchProjectBySlug, staticProjects } from "@/lib/projects";
+import { staticProjects } from "@/lib/projects";
 import ProjectDetailClient from "./ProjectDetailClient";
 import { notFound } from "next/navigation";
 
@@ -19,14 +19,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
 
-  // Try API first, fallback to static
-  let project = staticProjects.find((p) => p.slug === slug);
-  try {
-    const response = await fetchProjectBySlug(slug);
-    if (response.data) project = response.data;
-  } catch {
-    // use static fallback
-  }
+  const project = staticProjects.find((p) => p.slug === slug);
 
   if (!project) {
     return {
@@ -106,14 +99,7 @@ interface ProjectDetailPageProps {
 export default async function ProjectDetailPage({ params }: ProjectDetailPageProps) {
   const { slug } = await params;
 
-  // Try API first, fallback to static
-  let project = staticProjects.find((p) => p.slug === slug);
-  try {
-    const response = await fetchProjectBySlug(slug);
-    if (response.data) project = response.data;
-  } catch {
-    // use static fallback
-  }
+  const project = staticProjects.find((p) => p.slug === slug);
 
   if (!project) {
     notFound();

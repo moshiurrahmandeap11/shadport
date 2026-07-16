@@ -48,10 +48,6 @@ export function useDeleteContact() {
   });
 }
 
-// ── Projects (re-export from projects.ts for convenience) ────────────────────
-
-export { useProjects, useProject, useCreateProject, useUpdateProject, useDeleteProject } from "./projects";
-
 // ── Blogs (re-export from blogs.ts for convenience) ──────────────────────────
 
 export { useBlogs, useBlog, useCreateBlog, useUpdateBlog, useDeleteBlog } from "./blogs";

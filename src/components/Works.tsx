@@ -5,7 +5,6 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
 import Link from "next/link";
-import { useProjects } from "@/lib/projects";
 import { staticProjects } from "@/lib/projects";
 import { GitBranch, ExternalLink, ArrowUpRight } from "lucide-react";
 import { useHydrated } from "@/lib/use-hydrated";
@@ -31,10 +30,7 @@ export default function Works() {
   const cardsContainerRef = useRef<HTMLDivElement>(null);
   const hydrated = useHydrated();
 
-  const { data, isLoading } = useProjects();
-
-  // Use API data if available, fallback to static
-  const projects = data?.data ?? staticProjects;
+  const projects = staticProjects;
 
   useEffect(() => {
     if (!hydrated || !titleRef.current) return;

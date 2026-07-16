@@ -8,7 +8,6 @@ import {
   LayoutDashboard,
   FileText,
   Mail,
-  FolderKanban,
   LogOut,
   Menu,
   X,
@@ -18,7 +17,6 @@ import {
 
 const navItems = [
   { label: "Dashboard", href: "/admin/moshiur", icon: LayoutDashboard },
-  { label: "Projects", href: "/admin/moshiur/projects", icon: FolderKanban },
   { label: "Blogs", href: "/admin/moshiur/blogs", icon: FileText },
   { label: "Contacts", href: "/admin/moshiur/contacts", icon: Mail },
 ];

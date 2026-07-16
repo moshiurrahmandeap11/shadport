@@ -1,39 +1,25 @@
 "use client";
 
-import { useEffect } from "react";
 import Link from "next/link";
 import {
   FileText,
   Mail,
-  FolderKanban,
   TrendingUp,
   Plus,
   ArrowUpRight,
   Eye,
 } from "lucide-react";
-import { useBlogs, useProjects } from "@/lib/hooks";
+import { useBlogs } from "@/lib/hooks";
 
 export default function AdminDashboardPage() {
   const { data: blogsData, isLoading: blogsLoading } = useBlogs(1);
-  const { data: projectsData, isLoading: projectsLoading } = useProjects();
 
   const blogs = blogsData?.data ?? [];
-  const projects = projectsData?.data ?? [];
   const totalBlogs = blogsData?.pagination?.totalItems ?? blogs.length;
-  const totalProjects = projects.length;
 
-  const isLoading = blogsLoading || projectsLoading;
+  const isLoading = blogsLoading;
 
   const statCards = [
-    {
-      label: "Total Projects",
-      value: totalProjects,
-      icon: FolderKanban,
-      href: "/admin/moshiur/projects",
-      color: "from-blue-500/20 to-cyan-500/20",
-      iconColor: "text-blue-400",
-      borderColor: "border-blue-500/20",
-    },
     {
       label: "Total Blogs",
       value: totalBlogs,
@@ -55,7 +41,6 @@ export default function AdminDashboardPage() {
   ];
 
   const quickActions = [
-    { label: "New Project", href: "/admin/moshiur/projects/new", icon: Plus, color: "bg-blue-500/10 text-blue-400 border-blue-500/20 hover:bg-blue-500/20" },
     { label: "New Blog", href: "/admin/moshiur/blogs/new", icon: Plus, color: "bg-[#f97316]/10 text-[#f97316] border-[#f97316]/20 hover:bg-[#f97316]/20" },
     { label: "View Contacts", href: "/admin/moshiur/contacts", icon: Eye, color: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20 hover:bg-emerald-500/20" },
   ];
@@ -94,7 +79,7 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {statCards.map((card) => {
           const Icon = card.icon;
           return (
@@ -119,93 +104,46 @@ export default function AdminDashboardPage() {
         })}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Recent Projects */}
-        <div className="bg-[#111827]/60 border border-[#1f2937]/60 rounded-xl overflow-hidden">
-          <div className="p-5 border-b border-[#1f2937]/60 flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-white">Recent Projects</h2>
-            <Link
-              href="/admin/moshiur/projects"
-              className="text-sm text-[#f97316] hover:underline font-medium"
-            >
-              View All
-            </Link>
+      {/* Recent Blogs */}
+      <div className="bg-[#111827]/60 border border-[#1f2937]/60 rounded-xl overflow-hidden">
+        <div className="p-5 border-b border-[#1f2937]/60 flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-white">Recent Blogs</h2>
+          <Link
+            href="/admin/moshiur/blogs"
+            className="text-sm text-[#f97316] hover:underline font-medium"
+          >
+            View All
+          </Link>
+        </div>
+        {blogs.length === 0 ? (
+          <div className="p-8 text-center text-gray-500 text-sm">
+            <FileText className="w-10 h-10 mx-auto mb-3 text-gray-700" />
+            <p>No blogs yet</p>
           </div>
-          {projects.length === 0 ? (
-            <div className="p-8 text-center text-gray-500 text-sm">
-              <FolderKanban className="w-10 h-10 mx-auto mb-3 text-gray-700" />
-              <p>No projects yet</p>
-              <Link href="/admin/moshiur/projects/new" className="text-[#f97316] text-sm hover:underline mt-2 inline-block">
-                Create your first project
+        ) : (
+          <div className="divide-y divide-[#1f2937]/40">
+            {blogs.slice(0, 5).map((blog: any) => (
+              <Link
+                key={blog._id}
+                href={`/admin/moshiur/blogs/edit/${blog._id}`}
+                className="p-4 flex items-center gap-4 hover:bg-[#1f2937]/30 transition-colors group"
+              >
+                <div className="w-12 h-12 rounded-lg bg-[#1f2937] flex items-center justify-center flex-shrink-0 overflow-hidden">
+                  {blog.thumbnail?.url ? (
+                    <img src={blog.thumbnail.url} alt="" className="w-full h-full object-cover" />
+                  ) : (
+                    <FileText className="w-5 h-5 text-gray-600" />
+                  )}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-medium text-white truncate group-hover:text-[#f97316] transition-colors">{blog.title}</p>
+                  <p className="text-xs text-gray-500 mt-0.5">By {blog.author}</p>
+                </div>
+                <ArrowUpRight className="w-4 h-4 text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
               </Link>
-            </div>
-          ) : (
-            <div className="divide-y divide-[#1f2937]/40">
-              {projects.slice(0, 5).map((project: any) => (
-                <Link
-                  key={project._id || project.slug}
-                  href={`/admin/moshiur/projects/edit/${project.slug}`}
-                  className="p-4 flex items-center gap-4 hover:bg-[#1f2937]/30 transition-colors group"
-                >
-                  <div className="w-12 h-12 rounded-lg bg-[#1f2937] flex items-center justify-center flex-shrink-0 overflow-hidden">
-                    {project.thumbnail?.url ? (
-                      <img src={project.thumbnail.url} alt="" className="w-full h-full object-cover" />
-                    ) : (
-                      <FolderKanban className="w-5 h-5 text-gray-600" />
-                    )}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-sm font-medium text-white truncate group-hover:text-[#f97316] transition-colors">{project.title}</p>
-                    <p className="text-xs text-gray-500 mt-0.5">{project.techStack?.slice(0, 3).join(", ")}{project.techStack?.length > 3 ? " +" + (project.techStack.length - 3) : ""}</p>
-                  </div>
-                  <ArrowUpRight className="w-4 h-4 text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
-                </Link>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Recent Blogs */}
-        <div className="bg-[#111827]/60 border border-[#1f2937]/60 rounded-xl overflow-hidden">
-          <div className="p-5 border-b border-[#1f2937]/60 flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-white">Recent Blogs</h2>
-            <Link
-              href="/admin/moshiur/blogs"
-              className="text-sm text-[#f97316] hover:underline font-medium"
-            >
-              View All
-            </Link>
+            ))}
           </div>
-          {blogs.length === 0 ? (
-            <div className="p-8 text-center text-gray-500 text-sm">
-              <FileText className="w-10 h-10 mx-auto mb-3 text-gray-700" />
-              <p>No blogs yet</p>
-            </div>
-          ) : (
-            <div className="divide-y divide-[#1f2937]/40">
-              {blogs.slice(0, 5).map((blog: any) => (
-                <Link
-                  key={blog._id}
-                  href={`/admin/moshiur/blogs/edit/${blog._id}`}
-                  className="p-4 flex items-center gap-4 hover:bg-[#1f2937]/30 transition-colors group"
-                >
-                  <div className="w-12 h-12 rounded-lg bg-[#1f2937] flex items-center justify-center flex-shrink-0 overflow-hidden">
-                    {blog.thumbnail?.url ? (
-                      <img src={blog.thumbnail.url} alt="" className="w-full h-full object-cover" />
-                    ) : (
-                      <FileText className="w-5 h-5 text-gray-600" />
-                    )}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-sm font-medium text-white truncate group-hover:text-[#f97316] transition-colors">{blog.title}</p>
-                    <p className="text-xs text-gray-500 mt-0.5">By {blog.author}</p>
-                  </div>
-                  <ArrowUpRight className="w-4 h-4 text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
-                </Link>
-              ))}
-            </div>
-          )}
-        </div>
+        )}
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { fetchProjects, staticProjects } from "@/lib/projects";
+import { staticProjects } from "@/lib/projects";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight, FolderKanban } from "lucide-react";
@@ -30,13 +30,7 @@ export const metadata: Metadata = {
 export const revalidate = 60;
 
 export default async function ProjectsPage() {
-  let projects = staticProjects;
-  try {
-    const response = await fetchProjects();
-    if (response.data) projects = response.data;
-  } catch {
-    // fallback to static
-  }
+  const projects = staticProjects;
 
   return (
     <div className="min-h-screen bg-background">
