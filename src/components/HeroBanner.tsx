@@ -118,7 +118,7 @@ export default function HeroBanner() {
               Building immersive web experiences with modern technologies.
             </p>
             <Link
-              href="/contact"
+              href="/#contact"
               className="group inline-flex items-center gap-2 rounded-full bg-foreground px-6 py-3 sm:px-8 sm:py-3.5 text-sm sm:text-base font-semibold text-background shadow-lg transition-all hover:shadow-xl hover:scale-105"
             >
               <span>Let&apos;s collaborate</span>
