@@ -1,11 +1,20 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { Blog, formatDate, estimateReadTime } from "@/lib/blogs";
-import { ArrowUpRight, Calendar, Clock, ChevronLeft, ChevronRight, Search, Tag, User } from "lucide-react";
+import { Blog, formatDate, estimateReadTime, useBlogs } from "@/lib/blogs";
+import {
+  ArrowUpRight,
+  Calendar,
+  Clock,
+  ChevronLeft,
+  ChevronRight,
+  Search,
+  Tag,
+  User,
+} from "lucide-react";
 
 interface BlogCardProps {
   blog: Blog;
@@ -80,50 +89,39 @@ interface BlogsPageClientProps {
   totalItems: number;
 }
 
-export default function BlogsPageClient({ initialBlogs, totalPages, totalItems }: BlogsPageClientProps) {
+export default function BlogsPageClient({
+  initialBlogs,
+  totalPages,
+  totalItems,
+}: BlogsPageClientProps) {
   const [currentPage, setCurrentPage] = useState(1);
-  const [blogs, setBlogs] = useState<Blog[]>(initialBlogs);
-  const [isLoading, setIsLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filteredBlogs, setFilteredBlogs] = useState<Blog[]>(initialBlogs);
 
-  const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080/api";
+  const { data, isLoading, isFetching } = useBlogs(currentPage);
 
-  useEffect(() => {
-    if (searchQuery.trim() === "") {
-      setFilteredBlogs(blogs);
-    } else {
-      const query = searchQuery.toLowerCase();
-      setFilteredBlogs(
-        blogs.filter(
-          (blog) =>
-            blog.title.toLowerCase().includes(query) ||
-            blog.description.toLowerCase().includes(query) ||
-            blog.author.toLowerCase().includes(query)
-        )
-      );
-    }
-  }, [searchQuery, blogs]);
+  // Use server-fetched initial data on first page, otherwise use TanStack data
+  const blogs = currentPage === 1 && !data ? initialBlogs : (data?.data ?? []);
+  const pages = data?.pagination?.totalPages ?? totalPages;
+  const items = data?.pagination?.totalItems ?? totalItems;
 
-  const fetchPage = async (page: number) => {
+  // Client-side search filtering
+  const filteredBlogs = searchQuery.trim()
+    ? blogs.filter(
+        (blog) =>
+          blog.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          blog.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          blog.author.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : blogs;
+
+  const goToPage = (page: number) => {
     if (page === currentPage) return;
-    setIsLoading(true);
-    try {
-      const res = await fetch(`${API_BASE}/blogs?page=${page}`);
-      const data = await res.json();
-      if (data.success) {
-        setBlogs(data.data);
-        setFilteredBlogs(data.data);
-        setCurrentPage(page);
-        setSearchQuery("");
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }
-    } catch (err) {
-      console.error("Failed to fetch blogs:", err);
-    } finally {
-      setIsLoading(false);
-    }
+    setCurrentPage(page);
+    setSearchQuery("");
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
+  const loading = isLoading || isFetching;
 
   return (
     <div className="min-h-screen bg-background">
@@ -146,12 +144,13 @@ export default function BlogsPageClient({ initialBlogs, totalPages, totalItems }
                 Blogs
               </h1>
               <p className="text-foreground/50 mt-2 max-w-lg">
-                Web development insights, MERN Stack tutorials, React.js tips, and Next.js guides from my experience.
+                Web development insights, MERN Stack tutorials, React.js tips,
+                and Next.js guides from my experience.
               </p>
             </div>
             <div className="flex items-center gap-4">
               <span className="text-sm text-foreground/50 bg-foreground/5 px-4 py-2 rounded-full">
-                {totalItems} articles
+                {items} articles
               </span>
             </div>
           </div>
@@ -181,14 +180,16 @@ export default function BlogsPageClient({ initialBlogs, totalPages, totalItems }
 
       {/* Blog Grid */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8 sm:pb-12">
-        {isLoading ? (
+        {loading ? (
           <div className="flex items-center justify-center py-20">
             <div className="w-8 h-8 border-2 border-foreground/20 border-t-[#f97316] rounded-full animate-spin" />
           </div>
         ) : filteredBlogs.length === 0 ? (
           <div className="text-center py-20">
             <Tag className="w-12 h-12 text-foreground/20 mx-auto mb-4" />
-            <p className="text-foreground/40">No blogs found matching your search.</p>
+            <p className="text-foreground/40">
+              No blogs found matching your search.
+            </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
@@ -200,22 +201,22 @@ export default function BlogsPageClient({ initialBlogs, totalPages, totalItems }
       </div>
 
       {/* Pagination */}
-      {totalPages > 1 && !searchQuery && (
+      {pages > 1 && !searchQuery && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 sm:pb-24">
           <div className="flex items-center justify-center gap-2">
             <button
-              onClick={() => fetchPage(currentPage - 1)}
-              disabled={currentPage === 1 || isLoading}
+              onClick={() => goToPage(currentPage - 1)}
+              disabled={currentPage === 1 || loading}
               className="w-10 h-10 rounded-full border flex items-center justify-center transition-all disabled:border-foreground/10 disabled:text-foreground/30 disabled:cursor-not-allowed border-foreground/30 text-foreground hover:bg-foreground/5 hover:border-foreground/50"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
 
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+            {Array.from({ length: pages }, (_, i) => i + 1).map((page) => (
               <button
                 key={page}
-                onClick={() => fetchPage(page)}
-                disabled={isLoading}
+                onClick={() => goToPage(page)}
+                disabled={loading}
                 className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium transition-all ${
                   page === currentPage
                     ? "bg-[#f97316] text-white"
@@ -227,8 +228,8 @@ export default function BlogsPageClient({ initialBlogs, totalPages, totalItems }
             ))}
 
             <button
-              onClick={() => fetchPage(currentPage + 1)}
-              disabled={currentPage === totalPages || isLoading}
+              onClick={() => goToPage(currentPage + 1)}
+              disabled={currentPage === pages || loading}
               className="w-10 h-10 rounded-full border flex items-center justify-center transition-all disabled:border-foreground/10 disabled:text-foreground/30 disabled:cursor-not-allowed border-foreground/30 text-foreground hover:bg-foreground/5 hover:border-foreground/50"
             >
               <ChevronRight className="w-5 h-5" />
@@ -241,12 +242,15 @@ export default function BlogsPageClient({ initialBlogs, totalPages, totalItems }
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
         <div className="border-t border-foreground/10 pt-8">
           <p className="text-xs text-foreground/30 leading-relaxed max-w-3xl">
-            Welcome to the blog of Moshiur Rahman DEAP, a top-rated full stack developer in Bangladesh. 
-            Here you will find in-depth tutorials on MERN Stack, React.js, Next.js, Node.js, TypeScript, 
-            MongoDB, and modern web development practices. Whether you are a beginner looking to learn 
-            web development or an experienced developer seeking advanced tips, these articles cover 
-            everything from frontend frameworks to backend architecture. Follow along for regular updates 
-            on JavaScript, CSS, Tailwind, API design, database optimization, deployment strategies, and more.
+            Welcome to the blog of Moshiur Rahman DEAP, a top-rated full stack
+            developer in Bangladesh. Here you will find in-depth tutorials on
+            MERN Stack, React.js, Next.js, Node.js, TypeScript, MongoDB, and
+            modern web development practices. Whether you are a beginner looking
+            to learn web development or an experienced developer seeking advanced
+            tips, these articles cover everything from frontend frameworks to
+            backend architecture. Follow along for regular updates on
+            JavaScript, CSS, Tailwind, API design, database optimization,
+            deployment strategies, and more.
           </p>
         </div>
       </div>

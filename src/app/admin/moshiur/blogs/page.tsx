@@ -4,8 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { FileText, Plus, Pencil, Trash2, Eye, ArrowLeft } from "lucide-react";
 import toast from "react-hot-toast";
-
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080/api";
+import { useBlogs, useDeleteBlog } from "@/lib/blogs";
 
 interface Blog {
   _id: string;
@@ -16,33 +15,24 @@ interface Blog {
 }
 
 export default function BlogsListPage() {
-  const [blogs, setBlogs] = useState<Blog[]>([]);
-  const [loading, setLoading] = useState(true);
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchBlogs();
-  }, []);
+  const { data, isLoading, error } = useBlogs(1);
+  const deleteMutation = useDeleteBlog();
 
-  async function fetchBlogs() {
-    try {
-      const res = await fetch(`${API_BASE}/blogs?limit=100`);
-      const data = await res.json();
-      setBlogs(data.data || []);
-    } catch (error) {
+  const blogs: Blog[] = data?.data ?? [];
+
+  useEffect(() => {
+    if (error) {
       toast.error("Failed to fetch blogs");
-    } finally {
-      setLoading(false);
     }
-  }
+  }, [error]);
 
   async function handleDelete(id: string) {
     const toastId = toast.loading("Deleting blog...");
     try {
-      const res = await fetch(`${API_BASE}/blogs/${id}`, { method: "DELETE" });
-      if (!res.ok) throw new Error("Failed to delete");
+      await deleteMutation.mutateAsync(id);
       toast.success("Blog deleted", { id: toastId });
-      setBlogs((prev) => prev.filter((b) => b._id !== id));
     } catch {
       toast.error("Failed to delete blog", { id: toastId });
     } finally {
@@ -50,7 +40,7 @@ export default function BlogsListPage() {
     }
   }
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#f97316]" />
@@ -102,20 +92,37 @@ export default function BlogsListPage() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-[#1f2937]">
-                  <th className="text-left px-6 py-4 text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-                  <th className="text-left px-6 py-4 text-xs font-medium text-gray-500 uppercase tracking-wider">Author</th>
-                  <th className="text-left px-6 py-4 text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">Date</th>
-                  <th className="text-right px-6 py-4 text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                  <th className="text-left px-6 py-4 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Title
+                  </th>
+                  <th className="text-left px-6 py-4 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Author
+                  </th>
+                  <th className="text-left px-6 py-4 text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">
+                    Date
+                  </th>
+                  <th className="text-right px-6 py-4 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#1f2937]">
                 {blogs.map((blog) => (
-                  <tr key={blog._id} className="hover:bg-[#1f2937]/30 transition-colors">
+                  <tr
+                    key={blog._id}
+                    className="hover:bg-[#1f2937]/30 transition-colors"
+                  >
                     <td className="px-6 py-4">
-                      <p className="text-sm font-medium text-white truncate max-w-[200px] sm:max-w-xs">{blog.title}</p>
-                      <p className="text-xs text-gray-500 truncate max-w-[200px] sm:max-w-xs">{blog.description}</p>
+                      <p className="text-sm font-medium text-white truncate max-w-[200px] sm:max-w-xs">
+                        {blog.title}
+                      </p>
+                      <p className="text-xs text-gray-500 truncate max-w-[200px] sm:max-w-xs">
+                        {blog.description}
+                      </p>
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-400">{blog.author}</td>
+                    <td className="px-6 py-4 text-sm text-gray-400">
+                      {blog.author}
+                    </td>
                     <td className="px-6 py-4 text-sm text-gray-500 hidden sm:table-cell">
                       {new Date(blog.createdAt).toLocaleDateString()}
                     </td>
@@ -157,7 +164,9 @@ export default function BlogsListPage() {
       {deleteId && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
           <div className="bg-[#111827] border border-[#1f2937] rounded-xl p-6 max-w-sm w-full">
-            <h3 className="text-lg font-semibold text-white mb-2">Delete Blog?</h3>
+            <h3 className="text-lg font-semibold text-white mb-2">
+              Delete Blog?
+            </h3>
             <p className="text-sm text-gray-400 mb-6">
               This action cannot be undone. The blog will be permanently removed.
             </p>

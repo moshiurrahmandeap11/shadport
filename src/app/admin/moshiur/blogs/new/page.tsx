@@ -6,12 +6,13 @@ import { ArrowLeft, Plus, ImageIcon, Video } from "lucide-react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import QuillEditor, { QuillEditorRef } from "@/components/editor/QuillEditor";
-
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080/api";
+import { useCreateBlog } from "@/lib/blogs";
 
 export default function NewBlogPage() {
   const router = useRouter();
   const editorRef = useRef<QuillEditorRef>(null);
+  const createMutation = useCreateBlog();
+
   const [formData, setFormData] = useState({
     title: "",
     author: "Moshiur Rahman",
@@ -41,17 +42,15 @@ export default function NewBlogPage() {
       const data = new FormData();
       data.append("title", formData.title);
       data.append("author", formData.author);
-      data.append("description", formData.description || content.replace(/<[^>]*>/g, "").substring(0, 150));
+      data.append(
+        "description",
+        formData.description || content.replace(/<[^>]*>/g, "").substring(0, 150)
+      );
       data.append("content", content);
       if (thumbnail) data.append("thumbnail", thumbnail);
       if (media) data.append("media", media);
 
-      const res = await fetch(`${API_BASE}/blogs`, {
-        method: "POST",
-        body: data,
-      });
-
-      if (!res.ok) throw new Error("Failed to create blog");
+      await createMutation.mutateAsync(data);
 
       toast.success("Blog created successfully!", { id: toastId });
       router.push("/admin/moshiur/blogs");
@@ -79,7 +78,10 @@ export default function NewBlogPage() {
       </div>
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="bg-[#111827] border border-[#1f2937] rounded-xl p-6 space-y-5">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-[#111827] border border-[#1f2937] rounded-xl p-6 space-y-5"
+      >
         {/* Title */}
         <div>
           <label className="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">
@@ -88,7 +90,9 @@ export default function NewBlogPage() {
           <input
             type="text"
             value={formData.title}
-            onChange={(e) => setFormData((p) => ({ ...p, title: e.target.value }))}
+            onChange={(e) =>
+              setFormData((p) => ({ ...p, title: e.target.value }))
+            }
             placeholder="Blog title"
             required
             className="w-full px-4 py-3 rounded-xl bg-[#0a0f1e] border border-[#1f2937] text-white placeholder:text-gray-600 text-sm focus:outline-none focus:border-[#f97316] transition-colors"
@@ -103,7 +107,9 @@ export default function NewBlogPage() {
           <input
             type="text"
             value={formData.author}
-            onChange={(e) => setFormData((p) => ({ ...p, author: e.target.value }))}
+            onChange={(e) =>
+              setFormData((p) => ({ ...p, author: e.target.value }))
+            }
             placeholder="Author name"
             required
             className="w-full px-4 py-3 rounded-xl bg-[#0a0f1e] border border-[#1f2937] text-white placeholder:text-gray-600 text-sm focus:outline-none focus:border-[#f97316] transition-colors"
@@ -118,7 +124,9 @@ export default function NewBlogPage() {
           <input
             type="text"
             value={formData.description}
-            onChange={(e) => setFormData((p) => ({ ...p, description: e.target.value }))}
+            onChange={(e) =>
+              setFormData((p) => ({ ...p, description: e.target.value }))
+            }
             placeholder="Short description (optional)"
             className="w-full px-4 py-3 rounded-xl bg-[#0a0f1e] border border-[#1f2937] text-white placeholder:text-gray-600 text-sm focus:outline-none focus:border-[#f97316] transition-colors"
           />
