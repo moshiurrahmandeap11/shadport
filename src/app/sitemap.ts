@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { projects } from "@/lib/projects";
+import { staticProjects } from "@/lib/projects";
 import { fetchBlogs } from "@/lib/blogs";
 
 const BASE_URL = "https://moshiurrahman.online";
@@ -21,7 +21,7 @@ export default async function sitemap() {
   ];
 
   // Project routes
-  const projectRoutes = projects.map((project) => ({
+  const projectRoutes = staticProjects.map((project) => ({
     url: `${BASE_URL}/projects/${project.slug}`,
     lastModified: new Date(),
     changeFrequency: "weekly" as const,

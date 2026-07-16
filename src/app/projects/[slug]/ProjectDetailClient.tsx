@@ -112,7 +112,7 @@ export default function ProjectDetailClient({ project }: ProjectDetailClientProp
             {project.title}
           </h1>
           <p className="animate-item text-base sm:text-lg lg:text-xl text-foreground/70 mt-6 max-w-3xl leading-relaxed">
-            {project.descriptioin}
+            {project.description}
           </p>
 
           {/* Action Buttons */}

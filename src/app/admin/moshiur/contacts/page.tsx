@@ -1,49 +1,39 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowLeft, Mail, CheckCircle, Circle, Trash2, Download } from "lucide-react";
+import { ArrowLeft, Mail, CheckCircle, Circle, Trash2, Download, Search } from "lucide-react";
 import toast from "react-hot-toast";
-
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080/api";
-
-interface Contact {
-  _id: string;
-  name: string;
-  email: string;
-  message: string;
-  isRead: boolean;
-  createdAt: string;
-}
+import { useContacts, useMarkContactRead, useDeleteContact } from "@/lib/hooks";
 
 export default function ContactsPage() {
-  const [contacts, setContacts] = useState<Contact[]>([]);
-  const [loading, setLoading] = useState(true);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const { data, isLoading, error } = useContacts();
+  const markReadMutation = useMarkContactRead();
+  const deleteMutation = useDeleteContact();
+
+  const contacts = data?.data ?? [];
 
   useEffect(() => {
-    fetchContacts();
-  }, []);
-
-  async function fetchContacts() {
-    try {
-      const res = await fetch(`${API_BASE}/contacts`);
-      const data = await res.json();
-      setContacts(data.data || []);
-    } catch {
+    if (error) {
       toast.error("Failed to fetch contacts");
-    } finally {
-      setLoading(false);
     }
-  }
+  }, [error]);
+
+  const filteredContacts = searchQuery.trim()
+    ? contacts.filter(
+        (c: any) =>
+          c.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          c.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          c.message.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : contacts;
 
   async function handleMarkRead(id: string) {
     try {
-      const res = await fetch(`${API_BASE}/contacts/${id}/read`, { method: "PATCH" });
-      if (!res.ok) throw new Error("Failed");
-      setContacts((prev) =>
-        prev.map((c) => (c._id === id ? { ...c, isRead: true } : c))
-      );
+      await markReadMutation.mutateAsync(id);
       toast.success("Marked as read");
     } catch {
       toast.error("Failed to mark as read");
@@ -53,10 +43,8 @@ export default function ContactsPage() {
   async function handleDelete(id: string) {
     const toastId = toast.loading("Deleting...");
     try {
-      const res = await fetch(`${API_BASE}/contacts/${id}`, { method: "DELETE" });
-      if (!res.ok) throw new Error("Failed");
+      await deleteMutation.mutateAsync(id);
       toast.success("Contact deleted", { id: toastId });
-      setContacts((prev) => prev.filter((c) => c._id !== id));
     } catch {
       toast.error("Failed to delete", { id: toastId });
     } finally {
@@ -66,14 +54,14 @@ export default function ContactsPage() {
 
   function downloadCSV() {
     const headers = ["Name", "Email", "Message", "Date", "Read"];
-    const rows = contacts.map((c) => [
+    const rows = contacts.map((c: any) => [
       `"${c.name}"`,
       `"${c.email}"`,
       `"${c.message.replace(/"/g, '""')}"`,
       new Date(c.createdAt).toLocaleString(),
       c.isRead ? "Yes" : "No",
     ]);
-    const csv = [headers.join(","), ...rows.map((r) => r.join(","))].join("\n");
+    const csv = [headers.join(","), ...rows.map((r: any) => r.join(","))].join("\n");
     const blob = new Blob([csv], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -84,7 +72,7 @@ export default function ContactsPage() {
     toast.success("Contacts downloaded!");
   }
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#f97316]" />
@@ -95,7 +83,7 @@ export default function ContactsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between flex-wrap gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <Link
             href="/admin/moshiur"
@@ -117,16 +105,30 @@ export default function ContactsPage() {
         </button>
       </div>
 
+      {/* Search */}
+      <div className="relative max-w-md">
+        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search contacts..."
+          className="w-full pl-10 pr-4 py-3 rounded-xl bg-[#111827]/60 border border-[#1f2937]/60 text-white placeholder:text-gray-600 text-sm focus:outline-none focus:border-[#f97316]/50 transition-colors"
+        />
+      </div>
+
       {/* Contacts List */}
-      <div className="bg-[#111827] border border-[#1f2937] rounded-xl overflow-hidden">
-        {contacts.length === 0 ? (
+      <div className="bg-[#111827]/60 border border-[#1f2937]/60 rounded-xl overflow-hidden">
+        {filteredContacts.length === 0 ? (
           <div className="p-12 text-center">
-            <Mail className="w-12 h-12 text-gray-600 mx-auto mb-4" />
-            <p className="text-gray-400">No contacts yet</p>
+            <Mail className="w-12 h-12 text-gray-700 mx-auto mb-4" />
+            <p className="text-gray-400">
+              {searchQuery ? "No contacts match your search." : "No contacts yet"}
+            </p>
           </div>
         ) : (
-          <div className="divide-y divide-[#1f2937]">
-            {contacts.map((contact) => (
+          <div className="divide-y divide-[#1f2937]/40">
+            {filteredContacts.map((contact: any) => (
               <div
                 key={contact._id}
                 className={`p-5 hover:bg-[#1f2937]/30 transition-colors ${
@@ -135,7 +137,7 @@ export default function ContactsPage() {
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-3 mb-2">
+                    <div className="flex flex-wrap items-center gap-3 mb-2">
                       <h3 className="text-sm font-semibold text-white">{contact.name}</h3>
                       <a
                         href={`mailto:${contact.email}`}
@@ -181,8 +183,8 @@ export default function ContactsPage() {
 
       {/* Delete Confirmation */}
       {deleteId && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
-          <div className="bg-[#111827] border border-[#1f2937] rounded-xl p-6 max-w-sm w-full">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-[#111827] border border-[#1f2937] rounded-xl p-6 max-w-sm w-full shadow-2xl">
             <h3 className="text-lg font-semibold text-white mb-2">Delete Contact?</h3>
             <p className="text-sm text-gray-400 mb-6">This action cannot be undone.</p>
             <div className="flex gap-3">

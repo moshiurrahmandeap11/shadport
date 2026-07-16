@@ -1,11 +1,12 @@
 import { Metadata } from "next";
-import { projects } from "@/lib/projects";
+import { fetchProjectBySlug, staticProjects } from "@/lib/projects";
 import ProjectDetailClient from "./ProjectDetailClient";
 import { notFound } from "next/navigation";
 
-// Generate static params for all projects
+// Generate static params for all projects (fallback to static for build)
 export async function generateStaticParams() {
-  return projects.map((project) => ({
+  // During build, use static projects since API may not be available
+  return staticProjects.map((project) => ({
     slug: project.slug,
   }));
 }
@@ -17,7 +18,15 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const project = projects.find((p) => p.slug === slug);
+
+  // Try API first, fallback to static
+  let project = staticProjects.find((p) => p.slug === slug);
+  try {
+    const response = await fetchProjectBySlug(slug);
+    if (response.data) project = response.data;
+  } catch {
+    // use static fallback
+  }
 
   if (!project) {
     return {
@@ -96,7 +105,15 @@ interface ProjectDetailPageProps {
 
 export default async function ProjectDetailPage({ params }: ProjectDetailPageProps) {
   const { slug } = await params;
-  const project = projects.find((p) => p.slug === slug);
+
+  // Try API first, fallback to static
+  let project = staticProjects.find((p) => p.slug === slug);
+  try {
+    const response = await fetchProjectBySlug(slug);
+    if (response.data) project = response.data;
+  } catch {
+    // use static fallback
+  }
 
   if (!project) {
     notFound();
@@ -108,7 +125,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
     "@id": `https://moshiurrahman.online/projects/${slug}#project`,
     name: project.title,
     description: project.short_description,
-    image: project.screenshots.map((screenshot) => ({
+    image: project.screenshots.map((screenshot: string) => ({
       "@type": "ImageObject",
       url: screenshot,
     })),
@@ -127,7 +144,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
       alternateName: "Moshiur Rahman",
     },
     keywords: project.techStack.join(", ") + ", moshiur rahman, moshiur rahman deap, full stack developer bangladesh",
-    technologyUsed: project.techStack.map((tech) => ({
+    technologyUsed: project.techStack.map((tech: string) => ({
       "@type": "Thing",
       name: tech,
     })),

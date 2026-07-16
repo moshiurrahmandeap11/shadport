@@ -5,7 +5,8 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
 import Link from "next/link";
-import { projects } from "@/lib/projects";
+import { useProjects } from "@/lib/projects";
+import { staticProjects } from "@/lib/projects";
 import { GitBranch, ExternalLink, ArrowUpRight } from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -27,6 +28,11 @@ export default function Works() {
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const cardsContainerRef = useRef<HTMLDivElement>(null);
+
+  const { data, isLoading } = useProjects();
+
+  // Use API data if available, fallback to static
+  const projects = data?.data ?? staticProjects;
 
   useEffect(() => {
     if (!titleRef.current) return;
@@ -51,7 +57,7 @@ export default function Works() {
   }, []);
 
   useEffect(() => {
-    if (!cardsContainerRef.current) return;
+    if (!cardsContainerRef.current || !projects.length) return;
 
     const cards = cardsContainerRef.current.querySelectorAll(".project-card");
 
@@ -85,7 +91,7 @@ export default function Works() {
     }, sectionRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [projects.length]);
 
   return (
     <section
@@ -127,7 +133,7 @@ export default function Works() {
 
           return (
             <div
-              key={project.id}
+              key={project.slug}
               className="project-card relative w-full mb-[-60px] sm:mb-[-80px] lg:mb-[-100px]"
               style={{ zIndex: index + 1 }}
             >

@@ -1,25 +1,163 @@
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+
+export interface ProjectLink {
+  name: string;
+  url: string;
+}
+
+export interface ProjectThumbnail {
+  url: string;
+  publicId: string;
+  mediaType: string;
+}
+
 export interface Project {
-  id: number;
+  _id?: string;
+  id?: number;
   title: string;
   slug: string;
   short_description: string;
-  descriptioin: string;
+  description: string;
   techStack: string[];
   features: string[];
   challenges: string[];
   learnings: string[];
-  links: { name: string; url: string }[];
+  links: ProjectLink[];
   screenshots: string[];
+  thumbnail: ProjectThumbnail | null;
+  order: number;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
-export const projects: Project[] = [
+export interface ProjectsResponse {
+  success: boolean;
+  message: string;
+  data: Project[];
+}
+
+export interface ProjectResponse {
+  success: boolean;
+  message: string;
+  data: Project;
+}
+
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080/api";
+
+// ── Raw fetch helpers ──────────────────────────────────────────────────────
+
+export async function fetchProjects(): Promise<ProjectsResponse> {
+  const res = await fetch(`${API_BASE}/projects`, {
+    next: { revalidate: 60 },
+  });
+  if (!res.ok) throw new Error("Failed to fetch projects");
+  return res.json();
+}
+
+export async function fetchProjectBySlug(slug: string): Promise<ProjectResponse> {
+  const res = await fetch(`${API_BASE}/projects/${slug}`, {
+    next: { revalidate: 60 },
+  });
+  if (!res.ok) throw new Error("Failed to fetch project");
+  return res.json();
+}
+
+// ── TanStack Query hooks ───────────────────────────────────────────────────
+
+const projectsQueryKey = ["projects", "list"] as const;
+const projectDetailQueryKey = (slug: string) => ["projects", "detail", slug] as const;
+
+export function useProjects() {
+  return useQuery<ProjectsResponse, Error>({
+    queryKey: projectsQueryKey,
+    queryFn: () => fetchProjects(),
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
+}
+
+export function useProject(slug: string) {
+  return useQuery<ProjectResponse, Error>({
+    queryKey: projectDetailQueryKey(slug),
+    queryFn: () => fetchProjectBySlug(slug),
+    enabled: !!slug,
+    staleTime: 1000 * 60 * 5,
+  });
+}
+
+export function usePrefetchProject() {
+  const queryClient = useQueryClient();
+  return (slug: string) => {
+    queryClient.prefetchQuery({
+      queryKey: projectDetailQueryKey(slug),
+      queryFn: () => fetchProjectBySlug(slug),
+      staleTime: 1000 * 60 * 5,
+    });
+  };
+}
+
+// ── Mutations ────────────────────────────────────────────────────────────────
+
+export function useCreateProject() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (formData: FormData) => {
+      const res = await fetch(`${API_BASE}/projects`, {
+        method: "POST",
+        body: formData,
+      });
+      if (!res.ok) throw new Error("Failed to create project");
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
+    },
+  });
+}
+
+export function useUpdateProject() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ slug, formData }: { slug: string; formData: FormData }) => {
+      const res = await fetch(`${API_BASE}/projects/${slug}`, {
+        method: "PUT",
+        body: formData,
+      });
+      if (!res.ok) throw new Error("Failed to update project");
+      return res.json();
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
+      queryClient.invalidateQueries({ queryKey: projectDetailQueryKey(variables.slug) });
+    },
+  });
+}
+
+export function useDeleteProject() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (slug: string) => {
+      const res = await fetch(`${API_BASE}/projects/${slug}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) throw new Error("Failed to delete project");
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
+    },
+  });
+}
+
+// ── Static fallback data (for SSR / initial render before API is ready) ─────
+
+export const staticProjects: Project[] = [
   {
     id: 1,
     title: "BookShelf",
     slug: "book-shelf",
     short_description:
       "BookShelf is a modern full-stack web application that revolutionizes the way people discover, purchase, and manage digital books.",
-    descriptioin:
+    description:
       "BookShelf is a modern full-stack web application that revolutionizes the way people discover, purchase, and manage digital books. The platform provides a seamless experience for readers, authors, and administrators with features including user authentication, book listings, shopping cart functionality, wishlist management, reviews and ratings system, AI-powered chatbot assistance, and comprehensive admin dashboard.",
     techStack: [
       "Next.js",
@@ -34,25 +172,15 @@ export const projects: Project[] = [
     ],
     features: [
       "User registration and secure JWT authentication",
-
       "Book browsing with advanced filters (category, price, search)",
-
       "Shopping cart and secure checkout process",
-
       "Personal wishlist and reading history",
-
       "Book reviews and star ratings system",
-
       "AI-powered chatbot for book recommendations",
-
       "Author dashboard for book management",
-
       "Admin panel for complete platform control",
-
       "Email notifications via Nodemailer",
-
       "Google social login integration",
-
       "Real-time chat history storage",
     ],
     challenges: [
@@ -101,6 +229,8 @@ export const projects: Project[] = [
       "https://i.postimg.cc/wxPFjNB7/Screenshot-from-2026-04-28-19-44-22.png",
       "https://i.postimg.cc/yW4FXFgC/Screenshot-from-2026-04-28-19-44-30.png",
     ],
+    thumbnail: null,
+    order: 0,
   },
   {
     id: 2,
@@ -108,8 +238,8 @@ export const projects: Project[] = [
     slug: "bd-book",
     short_description:
       "A social media platform for Bangladeshi people to share their thoughts and ideas.",
-    descriptioin:
-      "BD BOOK is a social media platform designed specifically for Bangladeshi people to share their thoughts and ideas. It offers a wide range of features, including posting, commenting, liking, sharing, video calls, audio calls, meetings, and more. The platform is powered by AI and ML technologies, which enable it to provide personalized content recommendations and enhance user engagement through a sophisticated algorithm. Which is also powered by AI and ML.And it has a large algorithm for user engagement and content recommendation. The platform is built with a focus on security and privacy, ensuring that users' data is protected at all times. With its responsive design and user-friendly interface, BD BOOK provides an enjoyable and seamless experience for users to connect and share their ideas with others.",
+    description:
+      "BD BOOK is a social media platform designed specifically for Bangladeshi people to share their thoughts and ideas. It offers a wide range of features, including posting, commenting, liking, sharing, video calls, audio calls, meetings, and more. The platform is powered by AI and ML technologies, which enable it to provide personalized content recommendations and enhance user engagement through a sophisticated algorithm.",
     techStack: [
       "Next.js",
       "Tailwind CSS",
@@ -157,9 +287,10 @@ export const projects: Project[] = [
       "https://i.postimg.cc/1zP3MHkN/Screenshot-2026-04-08-161606.png",
       "https://i.postimg.cc/0N897NSy/Screenshot-2026-04-08-161616.png",
       "https://i.postimg.cc/0jJv9KgP/Screenshot-2026-04-08-161625.png",
-      "https://i.postimg.cc/0jJv9KgP/Screenshot-2026-04-08-161625.png",
       "https://i.postimg.cc/nVQMFCYy/Screenshot-2026-04-08-161639.png",
     ],
+    thumbnail: null,
+    order: 1,
   },
   {
     id: 3,
@@ -167,8 +298,8 @@ export const projects: Project[] = [
     slug: "career-crafter",
     short_description:
       "Career Crafter is a career guidance platform that helps individuals explore and plan their career paths.",
-    descriptioin:
-      "Career Crafter is an AI powered career guidance platform that helps individuals explore and plan their career paths. The platform offers a wide range of features, including personalized career assessments, job search tools, resume building, interview preparation, and more. With its user-friendly interface and comprehensive resources, Career Crafter empowers users to make informed decisions about their careers and achieve their professional goals.",
+    description:
+      "Career Crafter is an AI powered career guidance platform that helps individuals explore and plan their career paths. The platform offers a wide range of features, including personalized career assessments, job search tools, resume building, interview preparation, and more.",
     techStack: [
       "React.js",
       "Tailwind CSS",
@@ -221,6 +352,8 @@ export const projects: Project[] = [
       "https://i.postimg.cc/SRgfyd9z/Screenshot-2026-04-08-170808.png",
       "https://i.postimg.cc/MpMmSypn/Screenshot-2026-04-08-170819.png",
     ],
+    thumbnail: null,
+    order: 2,
   },
   {
     id: 4,
@@ -228,8 +361,8 @@ export const projects: Project[] = [
     slug: "code-circle",
     short_description:
       "Code Circle is a collaborative coding platform that allows developers to work together on coding projects in real-time.",
-    descriptioin:
-      "Code Circle is a collaborative coding platform that allows developers to work together on coding projects in real-time. The platform offers features such as code sharing, live collaboration, and integrated development tools. With its user-friendly interface and powerful collaboration capabilities, Code Circle enables developers to enhance their productivity and foster teamwork in coding projects.",
+    description:
+      "Code Circle is a collaborative coding platform that allows developers to work together on coding projects in real-time. The platform offers features such as code sharing, live collaboration, and integrated development tools.",
     techStack: [
       "React.js",
       "Tailwind CSS",
@@ -274,6 +407,8 @@ export const projects: Project[] = [
       "https://i.postimg.cc/0NGtTpV7/Screenshot-2026-04-08-171814.png",
       "https://i.postimg.cc/vTKXrXZ0/Screenshot-2026-04-08-171833.png",
     ],
+    thumbnail: null,
+    order: 3,
   },
   {
     id: 5,
@@ -281,8 +416,8 @@ export const projects: Project[] = [
     slug: "coursion",
     short_description:
       "Coursion is an online learning platform that offers a wide range of courses and resources for learners of all levels.",
-    descriptioin:
-      "Coursion is an online learning platform that offers a wide range of courses and resources for learners of all levels. The platform provides features such as personalized course recommendations, interactive learning materials, and a supportive community. With its user-friendly interface and comprehensive course offerings, Coursion empowers learners to acquire new skills and knowledge effectively.",
+    description:
+      "Coursion is an online learning platform that offers a wide range of courses and resources for learners of all levels. The platform provides features such as personalized course recommendations, interactive learning materials, and a supportive community.",
     techStack: ["React.js", "Tailwind CSS", "Node.js", "Express.js", "MongoDB"],
     features: [
       "Personalized course recommendations",
@@ -318,6 +453,8 @@ export const projects: Project[] = [
       "https://i.postimg.cc/Hnm8fyPT/Screenshot-2026-04-08-172257.png",
       "https://i.postimg.cc/1R0qDvfP/Screenshot-2026-04-08-172308.png",
     ],
+    thumbnail: null,
+    order: 4,
   },
   {
     id: 6,
@@ -325,8 +462,8 @@ export const projects: Project[] = [
     slug: "school-college-management",
     short_description:
       "A school and college management system that helps educational institutions manage their operations efficiently.",
-    descriptioin:
-      "A school and college management system that helps educational institutions manage their operations efficiently. The platform offers features such as student enrollment, attendance tracking, grade management, and communication tools for teachers, students, and parents. With its user-friendly interface and comprehensive features, the system streamlines administrative tasks and enhances communication within the educational community.",
+    description:
+      "A school and college management system that helps educational institutions manage their operations efficiently. The platform offers features such as student enrollment, attendance tracking, grade management, and communication tools for teachers, students, and parents.",
     techStack: ["React.js", "Tailwind CSS", "Node.js", "Express.js", "MongoDB"],
     features: [
       "Student enrollment",
@@ -359,6 +496,8 @@ export const projects: Project[] = [
       "https://i.postimg.cc/tJs8Gs1L/Screenshot-2026-04-08-172715.png",
       "https://i.postimg.cc/xTbBsbVR/Screenshot-2026-04-08-172738.png",
     ],
+    thumbnail: null,
+    order: 5,
   },
   {
     id: 7,
@@ -366,8 +505,8 @@ export const projects: Project[] = [
     slug: "netrakona-pressclub-website",
     short_description:
       "Netrakona Pressclub website is a platform that provides news and information about Netrakona district.",
-    descriptioin:
-      "Netrakona Pressclub website is a platform that provides news and information about Netrakona district. The website offers features such as news articles, event updates, and a directory of local businesses and organizations. With its user-friendly interface and comprehensive content, the website serves as a valuable resource for residents and visitors of Netrakona.",
+    description:
+      "Netrakona Pressclub website is a platform that provides news and information about Netrakona district. The website offers features such as news articles, event updates, and a directory of local businesses and organizations.",
     techStack: ["React.js", "Tailwind CSS", "Node.js", "Express.js", "MongoDB"],
     features: [
       "News articles about Netrakona district",
@@ -381,7 +520,9 @@ export const projects: Project[] = [
       "Creating a user-friendly interface for diverse users",
       "Integrating various features seamlessly into a single platform",
     ],
-    learnings: ["Gained experience in building websites for local communities"],
+    learnings: [
+      "Gained experience in building websites for local communities",
+    ],
     links: [
       {
         name: "Live Demo",
@@ -395,6 +536,8 @@ export const projects: Project[] = [
     screenshots: [
       "https://i.postimg.cc/YSkZ81gr/Screenshot-2026-04-08-201538.png",
     ],
+    thumbnail: null,
+    order: 6,
   },
   {
     id: 8,
@@ -402,8 +545,8 @@ export const projects: Project[] = [
     slug: "service-provider",
     short_description:
       "Service Provider is a platform that connects service providers with customers in need of their services.",
-    descriptioin:
-      "Service Provider is a platform that connects service providers with customers in need of their services. The platform offers features such as service listings, customer reviews, and a secure payment system. With its user-friendly interface and comprehensive features, Service Provider facilitates seamless interactions between service providers and customers, making it easier for users to find and access the services they need.",
+    description:
+      "Service Provider is a platform that connects service providers with customers in need of their services. The platform offers features such as service listings, customer reviews, and a secure payment system.",
     techStack: ["React.js", "Tailwind CSS", "Node.js", "Express.js", "MongoDB"],
     features: [
       "Service listings for various types of services",
@@ -441,6 +584,8 @@ export const projects: Project[] = [
       "https://i.postimg.cc/4NHp2qbQ/Screenshot-2026-04-08-202220.png",
       "https://i.postimg.cc/HxLywhks/Screenshot-2026-04-08-202233.png",
     ],
+    thumbnail: null,
+    order: 7,
   },
   {
     id: 9,
@@ -448,8 +593,8 @@ export const projects: Project[] = [
     slug: "modern-personal-blog-website",
     short_description:
       "Modern Personal Blog Website is a platform for individuals to share their thoughts and ideas through blog posts.",
-    descriptioin:
-      "Modern Personal Blog Website is a platform for individuals to share their thoughts and ideas through blog posts. The website offers features such as customizable themes, social media integration, and a user-friendly content management system. With its modern design and comprehensive features, the website provides an engaging and personalized blogging experience for users.",
+    description:
+      "Modern Personal Blog Website is a platform for individuals to share their thoughts and ideas through blog posts. The website offers features such as customizable themes, social media integration, and a user-friendly content management system.",
     techStack: ["React.js", "Tailwind CSS", "Node.js", "Express.js", "MongoDB"],
     features: [
       "Customizable themes for personalized blog appearance",
@@ -487,6 +632,8 @@ export const projects: Project[] = [
       "https://i.postimg.cc/MH29KBw7/Screenshot-2026-04-08-203420.png",
       "https://i.postimg.cc/bNRmpdBk/Screenshot-2026-04-08-203435.png",
     ],
+    thumbnail: null,
+    order: 8,
   },
   {
     id: 10,
@@ -494,8 +641,8 @@ export const projects: Project[] = [
     slug: "miverr-freelance-marketplace",
     short_description:
       "Miverr is a freelance marketplace that connects freelancers with clients looking for their services.",
-    descriptioin:
-      "Miverr is a freelance marketplace that connects freelancers with clients looking for their services. The platform offers features such as service listings, secure payment processing, and a review system for both freelancers and clients. With its user-friendly interface and comprehensive features, Miverr facilitates seamless interactions between freelancers and clients, making it easier for users to find and access the services they need.",
+    description:
+      "Miverr is a freelance marketplace that connects freelancers with clients looking for their services. The platform offers features such as service listings, secure payment processing, and a review system for both freelancers and clients.",
     techStack: ["React.js", "Tailwind CSS", "Node.js", "Express.js", "MongoDB"],
     features: [
       "Service listings for various freelance services",
@@ -524,5 +671,7 @@ export const projects: Project[] = [
       "https://i.postimg.cc/tR6XSGm8/Screenshot-2026-04-08-203907.png",
       "https://i.postimg.cc/pLsxhWpm/Screenshot-2026-04-08-203920.png",
     ],
+    thumbnail: null,
+    order: 9,
   },
 ];
