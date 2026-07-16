@@ -51,6 +51,11 @@ export function AdminProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    // Only run on client
+    if (typeof window === "undefined") {
+      setIsLoading(false);
+      return;
+    }
     const stored = localStorage.getItem("admin_session");
     if (stored) {
       try {
@@ -71,7 +76,9 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
       const token = generateToken(email);
       const session = { email, token };
-      localStorage.setItem("admin_session", JSON.stringify(session));
+      if (typeof window !== "undefined") {
+        localStorage.setItem("admin_session", JSON.stringify(session));
+      }
       setAdmin(session);
       return true;
     }
@@ -79,7 +86,9 @@ export function AdminProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = () => {
-    localStorage.removeItem("admin_session");
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("admin_session");
+    }
     setAdmin(null);
   };
 

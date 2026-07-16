@@ -3,7 +3,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/shared/Navbar/Navbar";
 import SmoothScroll from "@/components/SmoothScroll";
-import { AdminProvider } from "@/lib/admin-context";
 import { Providers } from "./providers";
 import { Toaster } from "react-hot-toast";
 
@@ -215,42 +214,40 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col bg-background text-foreground transition-colors duration-300">
-        <AdminProvider>
-          <Providers>
-            <SmoothScroll>
-              <Navbar />
-              <div className="pt-16">
-                {children}
-              </div>
-              <Toaster
-                position="bottom-right"
-                toastOptions={{
-                  duration: 4000,
-                  style: {
-                    background: "#111827",
-                    color: "#ffffff",
-                    border: "1px solid #374151",
-                    borderRadius: "12px",
-                    padding: "12px 16px",
-                    fontSize: "14px",
+        <Providers>
+          <SmoothScroll>
+            <Navbar />
+            <div className="pt-16">
+              {children}
+            </div>
+            <Toaster
+              position="bottom-right"
+              toastOptions={{
+                duration: 4000,
+                style: {
+                  background: "#111827",
+                  color: "#ffffff",
+                  border: "1px solid #374151",
+                  borderRadius: "12px",
+                  padding: "12px 16px",
+                  fontSize: "14px",
+                },
+                success: {
+                  iconTheme: {
+                    primary: "#22c55e",
+                    secondary: "#111827",
                   },
-                  success: {
-                    iconTheme: {
-                      primary: "#22c55e",
-                      secondary: "#111827",
-                    },
+                },
+                error: {
+                  iconTheme: {
+                    primary: "#ef4444",
+                    secondary: "#111827",
                   },
-                  error: {
-                    iconTheme: {
-                      primary: "#ef4444",
-                      secondary: "#111827",
-                    },
-                  },
-                }}
-              />
-            </SmoothScroll>
-          </Providers>
-        </AdminProvider>
+                },
+              }}
+            />
+          </SmoothScroll>
+        </Providers>
       </body>
     </html>
   );

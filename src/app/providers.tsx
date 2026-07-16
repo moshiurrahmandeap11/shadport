@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useState } from "react";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
+import { AdminProvider } from "@/lib/admin-context";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -28,7 +29,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
         enableSystem
         disableTransitionOnChange
       >
-        {children}
+        <AdminProvider>
+          {children}
+        </AdminProvider>
       </NextThemesProvider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
