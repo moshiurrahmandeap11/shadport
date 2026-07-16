@@ -6,6 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
 import { feedbacks } from "@/lib/reviews";
 import { Star, ChevronLeft, ChevronRight, Quote } from "lucide-react";
+import { useHydrated } from "@/lib/use-hydrated";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -15,6 +16,7 @@ export default function Testimonials() {
   const cardsRef = useRef<HTMLDivElement>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
+  const hydrated = useHydrated();
 
   const allReviews = feedbacks;
 
@@ -26,7 +28,7 @@ export default function Testimonials() {
   const hasPrev = currentIndex > 0;
 
   useEffect(() => {
-    if (!titleRef.current) return;
+    if (!hydrated || !titleRef.current) return;
     const ctx = gsap.context(() => {
       gsap.fromTo(
         titleRef.current,
@@ -45,7 +47,7 @@ export default function Testimonials() {
       );
     }, sectionRef);
     return () => ctx.revert();
-  }, []);
+  }, [hydrated]);
 
   const animateCards = useCallback((direction: "next" | "prev") => {
     if (!cardsRef.current || isAnimating) return;
@@ -70,7 +72,7 @@ export default function Testimonials() {
 
   // Animate in new cards after index changes
   useEffect(() => {
-    if (!cardsRef.current) return;
+    if (!hydrated || !cardsRef.current) return;
 
     const cards = cardsRef.current.querySelectorAll(".review-card");
     gsap.fromTo(
@@ -85,7 +87,7 @@ export default function Testimonials() {
         onComplete: () => setIsAnimating(false),
       }
     );
-  }, [currentIndex]);
+  }, [currentIndex, hydrated]);
 
   const handleNext = () => {
     if (hasNext && !isAnimating) animateCards("next");

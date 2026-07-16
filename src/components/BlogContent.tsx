@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Blog, formatDate, estimateReadTime } from "@/lib/blogs";
 import { ArrowLeft, Calendar, Clock, ArrowUpRight, Share2, Bookmark } from "lucide-react";
+import { useHydrated } from "@/lib/use-hydrated";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -20,10 +21,12 @@ export default function BlogContent({ blog, relatedBlogs = [] }: BlogContentProp
   const titleRef = useRef<HTMLHeadingElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const relatedRef = useRef<HTMLDivElement>(null);
+  const hydrated = useHydrated();
 
   const readTime = estimateReadTime(blog.content);
 
   useEffect(() => {
+    if (!hydrated) return;
     const ctx = gsap.context(() => {
       gsap.fromTo(
         heroRef.current,
@@ -81,7 +84,7 @@ export default function BlogContent({ blog, relatedBlogs = [] }: BlogContentProp
     });
 
     return () => ctx.revert();
-  }, [blog]);
+  }, [blog, hydrated]);
 
   const handleShare = async () => {
     if (navigator.share) {

@@ -6,6 +6,7 @@ import gsap from "gsap";
 import { useTheme } from "next-themes";
 import { Sun, Moon, X, Menu } from "lucide-react";
 import Link from "next/link";
+import { useHydrated } from "@/lib/use-hydrated";
 
 const navItems = [
   { id: 1, label: "Home", path: "/", scrollTo: "top" },
@@ -24,6 +25,7 @@ export default function Navbar() {
   const navRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const circleRef = useRef<HTMLDivElement>(null);
+  const hydrated = useHydrated();
 
   useEffect(() => {
     const tryCalling = async () => {
@@ -34,21 +36,20 @@ export default function Navbar() {
 
   // GSAP stagger animation for nav items
   useEffect(() => {
-    if (menuOpen && itemRefs.current.length > 0) {
-      gsap.fromTo(
-        itemRefs.current.filter(Boolean),
-        { y: -12, opacity: 0, scale: 0.95 },
-        {
-          y: 0,
-          opacity: 1,
-          scale: 1,
-          duration: 0.3,
-          stagger: 0.05,
-          ease: "power2.out",
-        },
-      );
-    }
-  }, [menuOpen]);
+    if (!hydrated || !menuOpen || itemRefs.current.length === 0) return;
+    gsap.fromTo(
+      itemRefs.current.filter(Boolean),
+      { y: -12, opacity: 0, scale: 0.95 },
+      {
+        y: 0,
+        opacity: 1,
+        scale: 1,
+        duration: 0.3,
+        stagger: 0.05,
+        ease: "power2.out",
+      },
+    );
+  }, [menuOpen, hydrated]);
 
   const activeTheme = theme === "system" ? resolvedTheme : theme;
   const isDark = activeTheme === "dark";
@@ -82,7 +83,7 @@ export default function Navbar() {
   };
 
   const toggleTheme = useCallback(() => {
-    if (isTransitioning) return;
+    if (!hydrated || isTransitioning) return;
     setIsTransitioning(true);
 
     const newTheme = isDark ? "light" : "dark";
@@ -157,7 +158,23 @@ export default function Navbar() {
         });
       },
     });
-  }, [isDark, isTransitioning, setTheme]);
+  }, [isDark, isTransitioning, setTheme, hydrated]);
+
+  if (!hydrated) {
+    return (
+      <nav className="fixed top-0 left-0 right-0 z-50 border-b border-foreground/10 bg-background/80 backdrop-blur-xl transition-colors duration-300">
+        <div className="mx-auto flex h-14 sm:h-16 max-w-7xl items-center justify-between px-3 sm:px-4 lg:px-6 xl:px-8">
+          <Link
+            href="/"
+            className="text-lg sm:text-xl font-bold tracking-tight text-foreground transition-colors shrink-0"
+          >
+            Moshiur
+          </Link>
+          <div className="w-8" />
+        </div>
+      </nav>
+    );
+  }
 
   return (
     <>

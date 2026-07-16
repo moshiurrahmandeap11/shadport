@@ -5,6 +5,7 @@ import Navbar from "@/components/shared/Navbar/Navbar";
 import SmoothScroll from "@/components/SmoothScroll";
 import { Providers } from "./providers";
 import { Toaster } from "react-hot-toast";
+import { HydrationGuard } from "@/components/HydrationGuard";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -216,7 +217,9 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-background text-foreground transition-colors duration-300">
         <Providers>
           <SmoothScroll>
-            <Navbar />
+            <HydrationGuard>
+              <Navbar />
+            </HydrationGuard>
             <div className="pt-16">
               {children}
             </div>

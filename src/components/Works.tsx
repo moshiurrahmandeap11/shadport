@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useProjects } from "@/lib/projects";
 import { staticProjects } from "@/lib/projects";
 import { GitBranch, ExternalLink, ArrowUpRight } from "lucide-react";
+import { useHydrated } from "@/lib/use-hydrated";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -28,6 +29,7 @@ export default function Works() {
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const cardsContainerRef = useRef<HTMLDivElement>(null);
+  const hydrated = useHydrated();
 
   const { data, isLoading } = useProjects();
 
@@ -35,7 +37,7 @@ export default function Works() {
   const projects = data?.data ?? staticProjects;
 
   useEffect(() => {
-    if (!titleRef.current) return;
+    if (!hydrated || !titleRef.current) return;
     const ctx = gsap.context(() => {
       gsap.fromTo(
         titleRef.current,
@@ -54,10 +56,10 @@ export default function Works() {
       );
     }, sectionRef);
     return () => ctx.revert();
-  }, []);
+  }, [hydrated]);
 
   useEffect(() => {
-    if (!cardsContainerRef.current || !projects.length) return;
+    if (!hydrated || !cardsContainerRef.current || !projects.length) return;
 
     const cards = cardsContainerRef.current.querySelectorAll(".project-card");
 
@@ -91,7 +93,7 @@ export default function Works() {
     }, sectionRef);
 
     return () => ctx.revert();
-  }, [projects.length]);
+  }, [projects.length, hydrated]);
 
   return (
     <section

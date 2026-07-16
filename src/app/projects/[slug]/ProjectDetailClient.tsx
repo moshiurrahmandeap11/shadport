@@ -16,6 +16,7 @@ import {
   Zap,
   Wrench,
 } from "lucide-react";
+import { useHydrated } from "@/lib/use-hydrated";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -30,8 +31,10 @@ export default function ProjectDetailClient({ project }: ProjectDetailClientProp
   const featuresRef = useRef<HTMLDivElement>(null);
   const challengesRef = useRef<HTMLDivElement>(null);
   const learningsRef = useRef<HTMLDivElement>(null);
+  const hydrated = useHydrated();
 
   useEffect(() => {
+    if (!hydrated) return;
     const ctx = gsap.context(() => {
       // Hero animation
       gsap.fromTo(
@@ -71,7 +74,7 @@ export default function ProjectDetailClient({ project }: ProjectDetailClientProp
     });
 
     return () => ctx.revert();
-  }, []);
+  }, [hydrated]);
 
   const githubLink = project.links.find((l) =>
     l.name.toLowerCase().includes("github")

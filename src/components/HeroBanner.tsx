@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import gsap from "gsap";
 import Image from "next/image";
 import Link from "next/link";
+import { useHydrated } from "@/lib/use-hydrated";
 
 export default function HeroBanner() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -12,8 +13,10 @@ export default function HeroBanner() {
   const titleRef = useRef<HTMLHeadingElement>(null);
   const leftContentRef = useRef<HTMLDivElement>(null);
   const rightContentRef = useRef<HTMLDivElement>(null);
+  const hydrated = useHydrated();
 
   useEffect(() => {
+    if (!hydrated) return;
     const ctx = gsap.context(() => {
       // Title character split animation
       const titleChars = titleRef.current?.querySelectorAll(".char");
@@ -56,7 +59,7 @@ export default function HeroBanner() {
     }, sectionRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [hydrated]);
 
   const firstName = "MOSHIUR";
   const lastName = "RAHMAN";
