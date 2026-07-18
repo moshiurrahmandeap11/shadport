@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { Blog, formatDate, estimateReadTime, useBlogs } from "@/lib/blogs";
+import { SkeletonBlogCard } from "@/components/ui/Skeleton";
 import {
   ArrowUpRight,
   Calendar,
@@ -181,8 +182,10 @@ export default function BlogsPageClient({
       {/* Blog Grid */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8 sm:pb-12">
         {loading ? (
-          <div className="flex items-center justify-center py-20">
-            <div className="w-8 h-8 border-2 border-foreground/20 border-t-[#f97316] rounded-full animate-spin" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <SkeletonBlogCard key={i} />
+            ))}
           </div>
         ) : filteredBlogs.length === 0 ? (
           <div className="text-center py-20">

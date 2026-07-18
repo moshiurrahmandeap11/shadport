@@ -5,6 +5,7 @@ import Navbar from "@/components/shared/Navbar/Navbar";
 import SmoothScroll from "@/components/SmoothScroll";
 import { Providers } from "./providers";
 import { Toaster } from "react-hot-toast";
+import PageTransition from "@/components/PageTransition";
 import { HydrationGuard } from "@/components/HydrationGuard";
 
 const geistSans = Geist({
@@ -107,7 +108,7 @@ export const metadata: Metadata = {
     canonical: "https://moshiurrahman.online",
   },
   verification: {
-    google: "your-google-verification-code",
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || "your-google-verification-code",
   },
   category: "technology",
   classification: "Web Development Portfolio",
@@ -215,14 +216,20 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col bg-background text-foreground transition-colors duration-300">
+        {/* Skip to content link for accessibility */}
+        <a href="#main-content" className="skip-to-content">
+          Skip to content
+        </a>
         <Providers>
           <SmoothScroll>
             <HydrationGuard>
               <Navbar />
             </HydrationGuard>
-            <div className="pt-16">
-              {children}
-            </div>
+            <main id="main-content" className="pt-16">
+              <PageTransition>
+                {children}
+              </PageTransition>
+            </main>
             <Toaster
               position="bottom-right"
               toastOptions={{

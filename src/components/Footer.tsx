@@ -1,7 +1,32 @@
-import { 
-  FaLinkedin, 
-  FaGithub
-} from "react-icons/fa6";
+import { FaLinkedin, FaGithub } from "react-icons/fa6";
+import { SiFiverr } from "react-icons/si";
+import NewsletterSignup from "./NewsletterSignup";
+
+const socialLinks = [
+  {
+    name: "LinkedIn",
+    href: "https://www.linkedin.com/in/moshiurrahmandeap",
+    icon: FaLinkedin,
+  },
+  {
+    name: "GitHub",
+    href: "https://github.com/moshiurrahmandeap11",
+    icon: FaGithub,
+  },
+  {
+    name: "Fiverr",
+    href: "https://www.fiverr.com/moshiurrahman67",
+    icon: SiFiverr,
+  },
+];
+
+const quickLinks = [
+  { label: "Home", href: "/" },
+  { label: "Projects", href: "/projects" },
+  { label: "Blogs", href: "/blogs" },
+  { label: "FAQ", href: "/faq" },
+  { label: "Contact", href: "/#contact" },
+];
 
 export default function Footer() {
   return (
@@ -14,40 +39,79 @@ export default function Footer() {
           <footer className="text-white/80 max-w-337.5 mx-auto flex flex-col h-70 sm:h-80 md:h-100 justify-between gap-2 overflow-hidden">
             {/* Actual Footer Content */}
             <div className="px-4 md:px-8 pt-10 sm:pt-12 md:pt-16 w-full relative z-10">
+              {/* Top Section - Links & Newsletter */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8 pb-8 border-b border-white/10">
+                {/* Brand */}
+                <div>
+                  <h3 className="text-lg font-bold text-white mb-2">Moshiur Rahman</h3>
+                  <p className="text-sm text-white/50 leading-relaxed mb-4">
+                    Full Stack Developer specializing in MERN Stack, Next.js, and modern web technologies.
+                  </p>
+                  <div className="flex items-center gap-3">
+                    {socialLinks.map((social) => (
+                      <a
+                        key={social.name}
+                        href={social.href}
+                        target="_blank"
+                        rel="noreferrer noopener"
+                        className="text-white/50 hover:text-white/80 transition-all duration-300 hover:scale-110"
+                        aria-label={social.name}
+                      >
+                        <social.icon className="h-5 w-5" />
+                      </a>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Quick Links */}
+                <div>
+                  <h4 className="text-sm font-semibold text-white/80 uppercase tracking-wider mb-4">
+                    Quick Links
+                  </h4>
+                  <div className="flex flex-col gap-2">
+                    {quickLinks.map((link) => (
+                      <a
+                        key={link.href}
+                        href={link.href}
+                        className="text-sm text-white/50 hover:text-white/80 transition-colors"
+                      >
+                        {link.label}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Newsletter */}
+                <div>
+                  <h4 className="text-sm font-semibold text-white/80 uppercase tracking-wider mb-4">
+                    Newsletter
+                  </h4>
+                  <p className="text-sm text-white/50 mb-3">
+                    Get the latest articles and updates.
+                  </p>
+                  <NewsletterSignup variant="footer" />
+                </div>
+              </div>
 
               {/* Bottom Section */}
               <div className="flex flex-col-reverse md:flex-row justify-between items-center gap-4 sm:gap-6">
                 <p className="text-white/80 text-xs sm:text-sm">
-                  © {new Date().getFullYear()} Moshiur Rahman | All rights reserved
+                  &copy; {new Date().getFullYear()} Moshiur Rahman | All rights reserved
                 </p>
 
-                {/* Social Icons */}
-                <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
-                  <a
-                    href="https://www.linkedin.com/in/moshiurrahmandeap"
-                    target="_blank"
-                    rel="noreferrer noopener"
-                    className="text-white/50 hover:text-white/80 transition-all duration-300 hover:scale-110 flex items-center gap-1.5 text-xs sm:text-sm"
-                    aria-label="LinkedIn"
-                  >
-                    <FaLinkedin className="h-4 w-4 sm:h-5 sm:w-5" />
-                    <span className="md:hidden">LinkedIn</span>
-                  </a>
-                  <a
-                    href="https://github.com/moshiurrahmandeap11"
-                    target="_blank"
-                    rel="noreferrer noopener"
-                    className="text-white/50 hover:text-white/80 transition-all duration-300 hover:scale-110 flex items-center gap-1.5 text-xs sm:text-sm"
-                    aria-label="GitHub"
-                  >
-                    <FaGithub className="h-4 w-4 sm:h-5 sm:w-5" />
-                    <span className="md:hidden">GitHub</span>
-                  </a>
+                {/* Built With */}
+                <div className="flex items-center gap-2 text-xs text-white/40">
+                  <span>Built with</span>
+                  <span className="text-white/60">Next.js</span>
+                  <span>&middot;</span>
+                  <span className="text-white/60">Tailwind</span>
+                  <span>&middot;</span>
+                  <span className="text-white/60">TypeScript</span>
                 </div>
               </div>
             </div>
 
-            {/* Giant Text Section — fades to bottom via Tailwind CSS mask */}
+            {/* Giant Text Section */}
             <section className="relative overflow-hidden">
               <h1
                 className="
@@ -66,9 +130,9 @@ export default function Footer() {
                     text-white/80
                     mask-[linear-gradient(to_bottom,black_0%,black_20%,transparent_80%)]
                 "
-                >
+              >
                 Moshiur
-                </h1>
+              </h1>
             </section>
           </footer>
         </div>

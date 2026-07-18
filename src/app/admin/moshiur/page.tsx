@@ -10,6 +10,7 @@ import {
   Eye,
 } from "lucide-react";
 import { useBlogs } from "@/lib/hooks";
+import StatsChart from "@/components/admin/StatsChart";
 
 export default function AdminDashboardPage() {
   const { data: blogsData, isLoading: blogsLoading } = useBlogs(1);
@@ -102,6 +103,18 @@ export default function AdminDashboardPage() {
             </Link>
           );
         })}
+      </div>
+
+      {/* Blog Activity Chart */}
+      <div className="bg-[#111827]/60 border border-[#1f2937]/60 rounded-xl p-5">
+        <h2 className="text-lg font-semibold text-white mb-4">Blog Activity</h2>
+        <StatsChart
+          data={[
+            { label: "Total Blogs", value: totalBlogs, color: "#f97316" },
+            { label: "This Month", value: Math.min(totalBlogs, 3), color: "#22c55e" },
+            { label: "Published", value: totalBlogs, color: "#3b82f6" },
+          ]}
+        />
       </div>
 
       {/* Recent Blogs */}

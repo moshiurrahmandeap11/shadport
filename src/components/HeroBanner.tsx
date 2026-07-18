@@ -120,25 +120,47 @@ export default function HeroBanner() {
               Designing digital products that are clear, usable, and conversion focused.
               Building immersive web experiences with modern technologies.
             </p>
-            <Link
-              href="/#contact"
-              className="group inline-flex items-center gap-2 rounded-full bg-foreground px-6 py-3 sm:px-8 sm:py-3.5 text-sm sm:text-base font-semibold text-background shadow-lg transition-all hover:shadow-xl hover:scale-105"
-            >
-              <span>Let&apos;s collaborate</span>
-              <svg
-                className="w-4 h-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2.5}
+            <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
+              <Link
+                href="/#contact"
+                className="group inline-flex items-center gap-2 rounded-full bg-foreground px-6 py-3 sm:px-8 sm:py-3.5 text-sm sm:text-base font-semibold text-background shadow-lg transition-all hover:shadow-xl hover:scale-105"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M7 17L17 7M17 7H7M17 7v10"
-                />
-              </svg>
-            </Link>
+                <span>Let&apos;s collaborate</span>
+                <svg
+                  className="w-4 h-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2.5}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M7 17L17 7M17 7H7M17 7v10"
+                  />
+                </svg>
+              </Link>
+              <a
+                href={process.env.NEXT_PUBLIC_RESUME_URL || "/resume.pdf"}
+                download
+                className="group inline-flex items-center gap-2 rounded-full border border-foreground/20 px-6 py-3 sm:px-8 sm:py-3.5 text-sm sm:text-base font-semibold text-foreground transition-all hover:bg-foreground/5 hover:border-foreground/40"
+              >
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  />
+                </svg>
+                <span>Resume</span>
+              </a>
+            </div>
           </motion.div>
 
           {/* Center: Image - much bigger */}

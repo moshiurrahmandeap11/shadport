@@ -131,6 +131,20 @@ export default function ContactCTA() {
                 <br />
                 TOGETHER
               </h2>
+              {/* Book a Call Button */}
+              {process.env.NEXT_PUBLIC_BOOKING_URL && (
+                <a
+                  href={process.env.NEXT_PUBLIC_BOOKING_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-6 inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-[#f97316]/30 text-[#f97316] text-sm font-medium hover:bg-[#f97316]/10 transition-colors w-fit"
+                >
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  Book a Free Call
+                </a>
+              )}
             </div>
 
             {/* Right - Contact Form */}

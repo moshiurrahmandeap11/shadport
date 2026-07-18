@@ -14,6 +14,7 @@ const navItems = [
   { id: 3, label: "Contact", path: "/#contact", scrollTo: "contact" },
   { id: 4, label: "Projects", path: "/#works", scrollTo: "works" },
   { id: 5, label: "Blogs", path: "/blogs" },
+  { id: 6, label: "FAQ", path: "/faq" },
 ];
 
 export default function Navbar() {
