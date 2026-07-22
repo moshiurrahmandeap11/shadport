@@ -7,7 +7,6 @@ import TechStack from "@/components/TechStack";
 import Works from "@/components/Works";
 import Testimonials from "@/components/Testimonials";
 import ContactCTA from "@/components/ContactCTA";
-import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "Moshiur Rahman DEAP | Best Full Stack Developer in Bangladesh & Fiverr",
@@ -150,7 +149,6 @@ export default function Home() {
         <Works />
         <Testimonials />
         <ContactCTA />
-        <Footer />
       </div>
     </>
   );
