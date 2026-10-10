@@ -31,7 +31,7 @@ export async function generateMetadata({
     const description =
       blog.description ||
       `Read ${blog.title} by Moshiur Rahman DEAP, best full stack developer in Bangladesh. MERN Stack, React.js, Next.js insights and tutorials.`;
-    const url = `https://moshiurrahman.online/blogs/${id}`;
+    const url = `https://moshiur.pro/blogs/${id}`;
 
     return {
       title,
@@ -123,33 +123,33 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
     const jsonLd = {
       "@context": "https://schema.org",
       "@type": "BlogPosting",
-      "@id": `https://moshiurrahman.online/blogs/${id}#blogpost`,
+      "@id": `https://moshiur.pro/blogs/${id}#blogpost`,
       headline: blog.title,
       description: blog.description,
       image: {
         "@type": "ImageObject",
-        url: blog.thumbnail?.url || "https://moshiurrahman.online/og_image.png",
+        url: blog.thumbnail?.url || "https://moshiur.pro/og_image.png",
         width: 1200,
         height: 630,
       },
-      url: `https://moshiurrahman.online/blogs/${id}`,
+      url: `https://moshiur.pro/blogs/${id}`,
       datePublished: blog.createdAt,
       dateModified: blog.updatedAt,
       author: {
         "@type": "Person",
-        "@id": "https://moshiurrahman.online/#person",
+        "@id": "https://moshiur.pro/#person",
         name: blog.author,
-        url: "https://moshiurrahman.online",
+        url: "https://moshiur.pro",
       },
       publisher: {
         "@type": "Person",
-        "@id": "https://moshiurrahman.online/#person",
+        "@id": "https://moshiur.pro/#person",
         name: "Moshiur Rahman DEAP",
-        url: "https://moshiurrahman.online",
+        url: "https://moshiur.pro",
       },
       mainEntityOfPage: {
         "@type": "WebPage",
-        "@id": `https://moshiurrahman.online/blogs/${id}`,
+        "@id": `https://moshiur.pro/blogs/${id}`,
       },
       articleSection: "Web Development",
       inLanguage: "en-US",
