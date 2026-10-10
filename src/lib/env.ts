@@ -9,7 +9,7 @@ const envSchema = z.object({
   NEXT_PUBLIC_API_BASE_URL: z.string().url().default("http://localhost:8080/api"),
 
   // Admin Auth
-  NEXT_PUBLIC_ADMIN_EMAIL: z.string().email().default("admin@moshiurrahman.online"),
+  NEXT_PUBLIC_ADMIN_EMAIL: z.string().email().default("admin@moshiur.pro"),
   ADMIN_PASSWORD_HASH: z.string().min(1).default("#moshiurrahaT5"),
   JWT_SECRET: z.string().min(16).default("moshiur-admin-secret-key-2026"),
 
@@ -19,7 +19,7 @@ const envSchema = z.object({
 
   // SEO
   NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION: z.string().optional(),
-  NEXT_PUBLIC_SITE_URL: z.string().url().default("https://moshiurrahman.online"),
+  NEXT_PUBLIC_SITE_URL: z.string().url().default("https://moshiur.pro"),
 
   // Analytics (optional)
   NEXT_PUBLIC_GA_ID: z.string().optional(),
