@@ -1,7 +1,7 @@
 import { fetchBlogs } from "@/lib/blogs";
 
 export async function GET() {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://moshiurrahman.online";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://moshiur.pro";
 
   let blogs: { _id: string; title: string; description: string; createdAt: string }[] = [];
   try {
