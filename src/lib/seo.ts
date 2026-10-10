@@ -16,7 +16,7 @@ interface SeoConfig {
  * Generate consistent metadata for all pages.
  */
 export function createMetadata(config: SeoConfig): Metadata {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://moshiurrahman.online";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://moshiur.pro";
   const fullUrl = config.url ? `${siteUrl}${config.url}` : siteUrl;
   const ogImage = config.image || `${siteUrl}/og_image.png`;
 
