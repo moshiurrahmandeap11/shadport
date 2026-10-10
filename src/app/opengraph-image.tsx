@@ -126,7 +126,7 @@ export default async function Image() {
             fontWeight: "bold",
           }}
         >
-          moshiurrahman.online
+          moshiur.pro
         </div>
       </div>
     ),
