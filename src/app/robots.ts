@@ -7,7 +7,7 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: ["/api/", "/_next/", "/static/"],
     },
-    sitemap: "https://moshiurrahman.online/sitemap.xml",
-    host: "https://moshiurrahman.online",
+    sitemap: "https://moshiur.pro/sitemap.xml",
+    host: "https://moshiur.pro",
   };
 }
