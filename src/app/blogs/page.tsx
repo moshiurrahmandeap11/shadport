@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     title: "Blogs | Moshiur Rahman DEAP - Full Stack Developer Insights",
     description:
       "Web development insights, MERN Stack tutorials, React.js tips, and Next.js guides from Moshiur Rahman DEAP - Best developer in Bangladesh.",
-    url: "https://moshiurrahman.online/blogs",
+    url: "https://moshiur.pro/blogs",
     type: "website",
     siteName: "Moshiur Rahman DEAP - Full Stack Developer",
     images: [
@@ -55,7 +55,7 @@ export const metadata: Metadata = {
     creator: "@moshiurrahman",
   },
   alternates: {
-    canonical: "https://moshiurrahman.online/blogs",
+    canonical: "https://moshiur.pro/blogs",
   },
   robots: {
     index: true,
@@ -90,26 +90,26 @@ export default async function BlogsPage() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "Blog",
-            "@id": "https://moshiurrahman.online/blogs#blog",
-            url: "https://moshiurrahman.online/blogs",
+            "@id": "https://moshiur.pro/blogs#blog",
+            url: "https://moshiur.pro/blogs",
             name: "Moshiur Rahman DEAP Blog",
             description:
               "Web development insights, MERN Stack tutorials, React.js tips, and Next.js guides from Moshiur Rahman DEAP.",
             publisher: {
               "@type": "Person",
-              "@id": "https://moshiurrahman.online/#person",
+              "@id": "https://moshiur.pro/#person",
               name: "Moshiur Rahman DEAP",
-              url: "https://moshiurrahman.online",
-              image: "https://moshiurrahman.online/og_image.png",
+              url: "https://moshiur.pro",
+              image: "https://moshiur.pro/og_image.png",
             },
             author: {
               "@type": "Person",
-              "@id": "https://moshiurrahman.online/#person",
+              "@id": "https://moshiur.pro/#person",
               name: "Moshiur Rahman DEAP",
             },
             image: {
               "@type": "ImageObject",
-              url: "https://moshiurrahman.online/og_image.png",
+              url: "https://moshiur.pro/og_image.png",
               width: 1200,
               height: 630,
             },
@@ -117,8 +117,8 @@ export default async function BlogsPage() {
               "@type": "BlogPosting",
               headline: blog.title,
               description: blog.description,
-              url: `https://moshiurrahman.online/blogs/${blog._id}`,
-              image: blog.thumbnail?.url || "https://moshiurrahman.online/og_image.png",
+              url: `https://moshiur.pro/blogs/${blog._id}`,
+              image: blog.thumbnail?.url || "https://moshiur.pro/og_image.png",
               datePublished: blog.createdAt,
               dateModified: blog.updatedAt,
               author: {
