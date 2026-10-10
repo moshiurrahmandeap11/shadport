@@ -261,11 +261,11 @@ export default function ContactCTA() {
                   +8801409063324
                 </a>
                 <a
-                  href="mailto:contact@moshiurrahman.online"
+                  href="mailto:contact@moshiur.pro"
                   className="flex items-center gap-2 text-sm text-foreground/60 hover:text-foreground transition-colors"
                 >
                   <Mail className="w-3.5 h-3.5" />
-                  contact@moshiurrahman.online
+                  contact@moshiur.pro
                 </a>
               </div>
             </div>
