@@ -44,12 +44,12 @@ export const metadata: Metadata = {
     title: "Moshiur Rahman DEAP | Best Full Stack Developer in Bangladesh & Fiverr",
     description:
       "Hire Moshiur Rahman DEAP - Top-rated Full Stack Developer in Bangladesh. MERN Stack, Next.js, React.js, Node.js expert. 10+ projects delivered.",
-    url: "https://moshiurrahman.online",
+    url: "https://moshiur.pro",
     type: "website",
     siteName: "Moshiur Rahman DEAP - Full Stack Developer",
     images: [
       {
-        url: "https://moshiurrahman.online/opengraph-image",
+        url: "https://moshiur.pro/opengraph-image",
         width: 1200,
         height: 630,
         alt: "Moshiur Rahman DEAP - Full Stack Developer Portfolio",
@@ -62,11 +62,11 @@ export const metadata: Metadata = {
     title: "Moshiur Rahman DEAP | Best Full Stack Developer in Bangladesh & Fiverr",
     description:
       "Hire Moshiur Rahman DEAP - Top-rated Full Stack Developer in Bangladesh. MERN Stack, Next.js, React.js, Node.js expert.",
-    images: ["https://moshiurrahman.online/twitter-image"],
+    images: ["https://moshiur.pro/twitter-image"],
     creator: "@moshiurrahman",
   },
   alternates: {
-    canonical: "https://moshiurrahman.online",
+    canonical: "https://moshiur.pro",
   },
 };
 
@@ -79,21 +79,21 @@ export default function Home() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "ProfilePage",
-            "@id": "https://moshiurrahman.online/#profilepage",
-            url: "https://moshiurrahman.online",
+            "@id": "https://moshiur.pro/#profilepage",
+            url: "https://moshiur.pro",
             name: "Moshiur Rahman DEAP - Full Stack Developer Portfolio",
             description:
               "Portfolio of Moshiur Rahman DEAP, the best full stack developer in Bangladesh. Specializes in MERN Stack, Next.js, React.js, Node.js.",
             mainEntity: {
               "@type": "Person",
-              "@id": "https://moshiurrahman.online/#person",
+              "@id": "https://moshiur.pro/#person",
               name: "Moshiur Rahman DEAP",
               alternateName: ["Moshiur Rahman", "Moshiur Rahman Developer"],
               jobTitle: "Full Stack Developer",
               description:
                 "Best Full Stack Developer in Bangladesh. MERN Stack expert with 10+ successful projects.",
-              url: "https://moshiurrahman.online",
-              image: "https://moshiurrahman.online/opengraph-image",
+              url: "https://moshiur.pro",
+              image: "https://moshiur.pro/opengraph-image",
               sameAs: [
                 "https://www.linkedin.com/in/moshiur-rahman",
                 "https://github.com/moshiur-rahman",
@@ -122,19 +122,19 @@ export default function Home() {
                 "@type": "CreativeWork",
                 name: "BookShelf - Full Stack Web Application",
                 description: "Modern full-stack web application for digital books",
-                url: "https://moshiurrahman.online/projects/book-shelf",
+                url: "https://moshiur.pro/projects/book-shelf",
               },
               {
                 "@type": "CreativeWork",
                 name: "BD BOOK - Social Media Platform",
                 description: "AI-powered social media platform for Bangladesh",
-                url: "https://moshiurrahman.online/projects/bd-book",
+                url: "https://moshiur.pro/projects/bd-book",
               },
               {
                 "@type": "CreativeWork",
                 name: "Career Crafter - AI Career Guidance",
                 description: "AI-powered career guidance platform",
-                url: "https://moshiurrahman.online/projects/career-crafter",
+                url: "https://moshiur.pro/projects/career-crafter",
               },
             ],
           }),
