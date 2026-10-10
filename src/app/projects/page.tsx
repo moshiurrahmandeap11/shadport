@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Projects | Moshiur Rahman DEAP",
     description: "Full stack web applications built with MERN Stack, Next.js, React.js.",
-    url: "https://moshiurrahman.online/projects",
+    url: "https://moshiur.pro/projects",
     type: "website",
   },
 };
