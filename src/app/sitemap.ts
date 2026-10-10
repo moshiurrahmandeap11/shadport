@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import { staticProjects } from "@/lib/projects";
 import { fetchBlogs } from "@/lib/blogs";
 
-const BASE_URL = "https://moshiurrahman.online";
+const BASE_URL = "https://moshiur.pro";
 
 export default async function sitemap() {
   const routes = [
