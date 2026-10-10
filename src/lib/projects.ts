@@ -484,7 +484,7 @@ export const staticProjects: Project[] = [
     links: [
       {
         name: "Live Demo",
-        url: "https://school.moshiurrahman.online/",
+        url: "https://school.moshiur.pro/",
       },
       {
         name: "GitHub",
@@ -567,7 +567,7 @@ export const staticProjects: Project[] = [
     links: [
       {
         name: "Live Demo",
-        url: "https://projuktisheba.moshiurrahman.online/",
+        url: "https://projuktisheba.moshiur.pro/",
       },
       {
         name: "GitHub",
