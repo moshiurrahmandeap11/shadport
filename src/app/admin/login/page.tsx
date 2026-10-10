@@ -75,7 +75,7 @@ export default function AdminLoginPage() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="admin@moshiurrahman.online"
+                  placeholder="admin@moshiur.pro"
                   required
                   className="w-full pl-10 pr-4 py-3 rounded-xl bg-[#0a0f1e] border border-[#1f2937] text-white placeholder:text-gray-600 text-sm focus:outline-none focus:border-[#f97316] transition-colors"
                 />
