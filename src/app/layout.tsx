@@ -19,7 +19,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://moshiurrahman.online"),
+  metadataBase: new URL("https://moshiur.pro"),
   title: {
     default: "Moshiur Rahman DEAP | Best Full Stack Developer in Bangladesh & Fiverr",
     template: "%s | Moshiur Rahman DEAP",
@@ -61,8 +61,8 @@ export const metadata: Metadata = {
     "saas developer bangladesh",
   ],
   authors: [
-    { name: "Moshiur Rahman", url: "https://moshiurrahman.online" },
-    { name: "Moshiur Rahman DEAP", url: "https://moshiurrahman.online" },
+    { name: "Moshiur Rahman", url: "https://moshiur.pro" },
+    { name: "Moshiur Rahman DEAP", url: "https://moshiur.pro" },
   ],
   creator: "Moshiur Rahman DEAP",
   publisher: "Moshiur Rahman DEAP",
@@ -81,7 +81,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://moshiurrahman.online",
+    url: "https://moshiur.pro",
     siteName: "Moshiur Rahman DEAP - Full Stack Developer",
     title: "Moshiur Rahman DEAP | Best Full Stack Developer in Bangladesh & Fiverr",
     description:
@@ -105,7 +105,7 @@ export const metadata: Metadata = {
     creator: "@moshiurrahman",
   },
   alternates: {
-    canonical: "https://moshiurrahman.online",
+    canonical: "https://moshiur.pro",
   },
   verification: {
     google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || "your-google-verification-code",
@@ -130,7 +130,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
-        <link rel="canonical" href="https://moshiurrahman.online" />
+        <link rel="canonical" href="https://moshiur.pro" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -139,11 +139,11 @@ export default function RootLayout({
               "@graph": [
                 {
                   "@type": "Person",
-                  "@id": "https://moshiurrahman.online/#person",
+                  "@id": "https://moshiur.pro/#person",
                   name: "Moshiur Rahman DEAP",
                   alternateName: ["Moshiur Rahman", "Moshiur Rahman Developer", "Moshiur Rahman DEAP Developer"],
-                  url: "https://moshiurrahman.online",
-                  image: "https://moshiurrahman.online/og_image.png",
+                  url: "https://moshiur.pro",
+                  image: "https://moshiur.pro/og_image.png",
                   jobTitle: "Full Stack Developer",
                   description:
                     "Best Full Stack Developer in Bangladesh specializing in MERN Stack, Next.js, React.js, Node.js. Top-rated developer on Fiverr and LinkedIn.",
@@ -177,37 +177,37 @@ export default function RootLayout({
                 },
                 {
                   "@type": "WebSite",
-                  "@id": "https://moshiurrahman.online/#website",
-                  url: "https://moshiurrahman.online",
+                  "@id": "https://moshiur.pro/#website",
+                  url: "https://moshiur.pro",
                   name: "Moshiur Rahman DEAP - Full Stack Developer Portfolio",
                   description:
                     "Portfolio of Moshiur Rahman DEAP, the best full stack developer in Bangladesh. Hire for MERN stack, Next.js, React.js projects.",
                   publisher: {
-                    "@id": "https://moshiurrahman.online/#person",
+                    "@id": "https://moshiur.pro/#person",
                   },
                   potentialAction: {
                     "@type": "SearchAction",
                     target: {
                       "@type": "EntryPoint",
-                      urlTemplate: "https://moshiurrahman.online/blogs?q={search_term_string}",
+                      urlTemplate: "https://moshiur.pro/blogs?q={search_term_string}",
                     },
                     "query-input": "required name=search_term_string",
                   },
                 },
                 {
                   "@type": "WebPage",
-                  "@id": "https://moshiurrahman.online/#webpage",
-                  url: "https://moshiurrahman.online",
+                  "@id": "https://moshiur.pro/#webpage",
+                  url: "https://moshiur.pro",
                   name: "Moshiur Rahman DEAP | Best Full Stack Developer in Bangladesh",
                   isPartOf: {
-                    "@id": "https://moshiurrahman.online/#website",
+                    "@id": "https://moshiur.pro/#website",
                   },
                   about: {
-                    "@id": "https://moshiurrahman.online/#person",
+                    "@id": "https://moshiur.pro/#person",
                   },
                   primaryImageOfPage: {
                     "@type": "ImageObject",
-                    url: "https://moshiurrahman.online/og_image.png",
+                    url: "https://moshiur.pro/og_image.png",
                   },
                 },
               ],
