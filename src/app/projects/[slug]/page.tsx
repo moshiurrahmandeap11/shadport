@@ -32,8 +32,8 @@ export async function generateMetadata({
   const description =
     project.short_description +
     ` Built by Moshiur Rahman DEAP, best full stack developer in Bangladesh specializing in ${project.techStack.join(", ")}. Hire for your next project.`;
-  const url = `https://moshiurrahman.online/projects/${slug}`;
-  const ogImage = project.screenshots[0] || "https://moshiurrahman.online/opengraph-image";
+  const url = `https://moshiur.pro/projects/${slug}`;
+  const ogImage = project.screenshots[0] || "https://moshiur.pro/opengraph-image";
 
   return {
     title,
@@ -108,24 +108,24 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "CreativeWork",
-    "@id": `https://moshiurrahman.online/projects/${slug}#project`,
+    "@id": `https://moshiur.pro/projects/${slug}#project`,
     name: project.title,
     description: project.short_description,
     image: project.screenshots.map((screenshot: string) => ({
       "@type": "ImageObject",
       url: screenshot,
     })),
-    url: `https://moshiurrahman.online/projects/${slug}`,
+    url: `https://moshiur.pro/projects/${slug}`,
     author: {
       "@type": "Person",
-      "@id": "https://moshiurrahman.online/#person",
+      "@id": "https://moshiur.pro/#person",
       name: "Moshiur Rahman DEAP",
       alternateName: "Moshiur Rahman",
-      url: "https://moshiurrahman.online",
+      url: "https://moshiur.pro",
     },
     creator: {
       "@type": "Person",
-      "@id": "https://moshiurrahman.online/#person",
+      "@id": "https://moshiur.pro/#person",
       name: "Moshiur Rahman DEAP",
       alternateName: "Moshiur Rahman",
     },
@@ -137,7 +137,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
     featureList: project.features,
     isPartOf: {
       "@type": "WebSite",
-      "@id": "https://moshiurrahman.online/#website",
+      "@id": "https://moshiur.pro/#website",
     },
   };
 
