@@ -1,4 +1,3 @@
-import { Metadata } from "next";
 import { staticProjects } from "@/lib/projects";
 import { fetchBlogs } from "@/lib/blogs";
 
