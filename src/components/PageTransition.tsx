@@ -9,7 +9,8 @@ export default function PageTransition({ children }: { children: React.ReactNode
   const [isFirstRender, setIsFirstRender] = useState(true);
 
   useEffect(() => {
-    setIsFirstRender(false);
+    const id = requestAnimationFrame(() => setIsFirstRender(false));
+    return () => cancelAnimationFrame(id);
   }, []);
 
   return (
