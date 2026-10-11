@@ -64,7 +64,6 @@ export function AdminProvider({ children }: { children: ReactNode }) {
   // Check for existing session and lockout on mount
   useEffect(() => {
     if (typeof window === "undefined") {
-      setIsLoading(false);
       return;
     }
 
