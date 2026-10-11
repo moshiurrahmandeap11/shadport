@@ -1,5 +1,4 @@
 import { Metadata } from "next";
-import { staticProjects } from "@/lib/projects";
 import ProjectsPageClient from "./ProjectsPageClient";
 
 export const metadata: Metadata = {
