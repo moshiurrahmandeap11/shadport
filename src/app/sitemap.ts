@@ -13,10 +13,22 @@ export default async function sitemap() {
       priority: 1.0,
     },
     {
+      url: `${BASE_URL}/projects`,
+      lastModified: new Date(),
+      changeFrequency: "daily" as const,
+      priority: 0.9,
+    },
+    {
       url: `${BASE_URL}/blogs`,
       lastModified: new Date(),
       changeFrequency: "daily" as const,
       priority: 0.9,
+    },
+    {
+      url: `${BASE_URL}/faq`,
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
     },
   ];
 
