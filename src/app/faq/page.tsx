@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Metadata } from "next";
 import { createMetadata, createFaqSchema } from "@/lib/seo";
 
@@ -119,7 +120,7 @@ export default function FAQPage() {
             <p className="text-foreground/60 mb-4">
               Still have questions? Feel free to reach out.
             </p>
-            <a
+            <Link
               href="/#contact"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-foreground text-background font-medium text-sm hover:bg-foreground/90 transition-colors"
             >
@@ -137,7 +138,7 @@ export default function FAQPage() {
                   d="M7 17L17 7M17 7H7M17 7v10"
                 />
               </svg>
-            </a>
+            </Link>
           </div>
         </div>
       </div>
