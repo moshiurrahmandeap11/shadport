@@ -31,13 +31,16 @@ export default function EditBlogPage() {
   useEffect(() => {
     if (data?.data) {
       const blog = data.data;
-      setFormData({
-        title: blog.title,
-        author: blog.author,
-        description: blog.description || "",
+      const id = requestAnimationFrame(() => {
+        setFormData({
+          title: blog.title,
+          author: blog.author,
+          description: blog.description || "",
+        });
+        setInitialContent(blog.content);
+        setEditorContent(blog.content);
       });
-      setInitialContent(blog.content);
-      setEditorContent(blog.content);
+      return () => cancelAnimationFrame(id);
     }
   }, [data]);
 
