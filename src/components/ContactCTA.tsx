@@ -118,7 +118,7 @@ export default function ContactCTA() {
 
   const quickLinks = [
     { label: "Home", href: "/" },
-    { label: "About Me", href: "/about" },
+    { label: "About Me", href: "/#about" },
     { label: "Portfolio", href: "/projects" },
     { label: "Contact Us", href: "#contact" },
   ];
