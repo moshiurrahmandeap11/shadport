@@ -1,4 +1,4 @@
-import { fetchBlogs, fetchBlogById } from "@/lib/blogs";
+import { fetchBlogs, fetchBlogById, Blog } from "@/lib/blogs";
 import BlogContent from "@/components/BlogContent";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
@@ -105,12 +105,13 @@ interface BlogDetailPageProps {
 export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
   const { id } = await params;
 
+  let blog;
+  let relatedBlogs: Blog[] = [];
+
   try {
     const response = await fetchBlogById(id);
-    const blog = response.data;
+    blog = response.data;
 
-    // Fetch related blogs (other blogs excluding current one)
-    let relatedBlogs: any[] = [];
     try {
       const allBlogsResponse = await fetchBlogs(1);
       relatedBlogs = allBlogsResponse.data
@@ -119,8 +120,11 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
     } catch {
       relatedBlogs = [];
     }
+  } catch {
+    notFound();
+  }
 
-    const jsonLd = {
+  const jsonLd = {
       "@context": "https://schema.org",
       "@type": "BlogPosting",
       "@id": `https://moshiur.pro/blogs/${id}#blogpost`,
@@ -165,16 +169,13 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
       ],
     };
 
-    return (
-      <>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-        <BlogContent blog={blog} relatedBlogs={relatedBlogs} />
-      </>
-    );
-  } catch {
-    notFound();
-  }
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <BlogContent blog={blog} relatedBlogs={relatedBlogs} />
+    </>
+  );
 }
