@@ -6,7 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
 import Link from "next/link";
 import { Blog, formatDate, estimateReadTime } from "@/lib/blogs";
-import { ArrowLeft, Calendar, Clock, ArrowUpRight, Share2, Bookmark } from "lucide-react";
+import { ArrowLeft, Calendar, Clock, ArrowUpRight, Share2 } from "lucide-react";
 import { useHydrated } from "@/lib/use-hydrated";
 import ReadingProgress from "./ReadingProgress";
 
