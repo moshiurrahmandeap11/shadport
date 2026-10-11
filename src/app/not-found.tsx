@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import Link from "next/link";
-import { Home, Search, ArrowLeft } from "lucide-react";
+import { Home, ArrowLeft } from "lucide-react";
 
 export default function NotFoundPage() {
   const containerRef = useRef<HTMLDivElement>(null);
