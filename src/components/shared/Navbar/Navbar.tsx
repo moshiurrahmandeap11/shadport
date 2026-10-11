@@ -6,6 +6,7 @@ import gsap from "gsap";
 import { useTheme } from "next-themes";
 import { Sun, Moon, X, Menu } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useHydrated } from "@/lib/use-hydrated";
 
 const navItems = [
@@ -27,6 +28,7 @@ export default function Navbar() {
   const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const circleRef = useRef<HTMLDivElement>(null);
   const hydrated = useHydrated();
+  const router = useRouter();
 
   useEffect(() => {
     const tryCalling = async () => {
@@ -61,7 +63,7 @@ export default function Navbar() {
     
     // If it's a page navigation (like /blogs), use router
     if (item.path && !item.scrollTo) {
-      window.location.href = item.path;
+      router.push(item.path);
       return;
     }
     
