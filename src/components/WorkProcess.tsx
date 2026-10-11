@@ -80,7 +80,7 @@ export default function WorkProcess() {
 
     const ctx = gsap.context(() => {
       // Create horizontal scroll animation
-      const tl = gsap.to(slider, {
+      gsap.to(slider, {
         x: -(totalWidth - window.innerWidth),
         duration: 1,
         ease: "none",
