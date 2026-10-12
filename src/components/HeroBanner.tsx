@@ -169,7 +169,7 @@ export default function HeroBanner() {
           <div className="order-1 lg:order-2 flex justify-center -mt-6 sm:-mt-10 md:-mt-14 lg:-mt-[6vw] xl:-mt-[7vw]">
             <div
               ref={imageRef}
-              className="relative w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl mx-auto"
+              className="relative w-[300px] sm:w-[360px] md:w-[420px] lg:w-[460px] xl:w-[500px] max-w-full mx-auto flex justify-center"
             >
               <div
                 className="relative w-full aspect-[488/511]"
@@ -182,7 +182,9 @@ export default function HeroBanner() {
                   src="/profile.png"
                   alt="Moshiur Rahman"
                   fill
-                  className="object-contain grayscale hover:grayscale-0 transition-all duration-700"
+                  quality={100}
+                  unoptimized
+                  className="object-contain transition-all duration-700"
                   priority
                   sizes="(max-width: 640px) 95vw, (max-width: 768px) 90vw, (max-width: 1024px) 70vw, (max-width: 1280px) 60vw, 700px"
                 />
