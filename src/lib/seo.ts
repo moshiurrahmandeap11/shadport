@@ -13,7 +13,8 @@ interface SeoConfig {
 }
 
 /**
- * Generate consistent metadata for all pages.
+ * Generate standardized Next.js Metadata configuration with OpenGraph,
+ * Twitter cards, and canonical link attributes.
  */
 export function createMetadata(config: SeoConfig): Metadata {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://moshiur.pro";
