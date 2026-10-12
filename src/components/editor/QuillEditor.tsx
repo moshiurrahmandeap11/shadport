@@ -80,7 +80,7 @@ const QuillEditor = forwardRef<QuillEditorRef, QuillEditorProps>(
 
         // Listen for changes
         quillInstance.on("text-change", () => {
-          const html = quillInstance.root.innerHTML;
+          const html = quillInstance?.root?.innerHTML ?? "";
           onChange?.(html);
         });
 
