@@ -165,15 +165,21 @@ export default function HeroBanner() {
             </div>
           </motion.div>
 
-          {/* Center: Image - much bigger */}
-          <div className="order-1 lg:order-2 flex justify-center">
+          {/* Center: Image - positioned to overlap RAHMAN typography */}
+          <div className="order-1 lg:order-2 flex justify-center -mt-6 sm:-mt-10 md:-mt-14 lg:-mt-[6vw] xl:-mt-[7vw]">
             <div
               ref={imageRef}
-              className="relative w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl xl:max-w-3xl mx-auto"
+              className="relative w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl mx-auto"
             >
-              <div className="relative w-full aspect-[489/510]">
+              <div
+                className="relative w-full aspect-[488/511]"
+                style={{
+                  WebkitMaskImage: "linear-gradient(to bottom, black 82%, transparent 100%)",
+                  maskImage: "linear-gradient(to bottom, black 82%, transparent 100%)",
+                }}
+              >
                 <Image
-                  src="/moshiur.png"
+                  src="/profile.png"
                   alt="Moshiur Rahman"
                   fill
                   className="object-contain grayscale hover:grayscale-0 transition-all duration-700"
