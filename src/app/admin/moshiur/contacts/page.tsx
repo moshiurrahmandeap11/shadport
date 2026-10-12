@@ -6,6 +6,15 @@ import { ArrowLeft, Mail, CheckCircle, Circle, Trash2, Download, Search } from "
 import toast from "react-hot-toast";
 import { useContacts, useMarkContactRead, useDeleteContact } from "@/lib/hooks";
 
+interface ContactItem {
+  _id: string;
+  name: string;
+  email: string;
+  message: string;
+  isRead: boolean;
+  createdAt: string;
+}
+
 export default function ContactsPage() {
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -24,7 +33,7 @@ export default function ContactsPage() {
 
   const filteredContacts = searchQuery.trim()
     ? contacts.filter(
-        (c: any) =>
+        (c: ContactItem) =>
           c.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
           c.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
           c.message.toLowerCase().includes(searchQuery.toLowerCase())
@@ -54,14 +63,14 @@ export default function ContactsPage() {
 
   function downloadCSV() {
     const headers = ["Name", "Email", "Message", "Date", "Read"];
-    const rows = contacts.map((c: any) => [
+    const rows = contacts.map((c: ContactItem) => [
       `"${c.name}"`,
       `"${c.email}"`,
       `"${c.message.replace(/"/g, '""')}"`,
       new Date(c.createdAt).toLocaleString(),
       c.isRead ? "Yes" : "No",
     ]);
-    const csv = [headers.join(","), ...rows.map((r: any) => r.join(","))].join("\n");
+    const csv = [headers.join(","), ...rows.map((r: string[]) => r.join(","))].join("\n");
     const blob = new Blob([csv], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
