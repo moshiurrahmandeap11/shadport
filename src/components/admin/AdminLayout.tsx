@@ -10,7 +10,6 @@ import {
   Mail,
   LogOut,
   Menu,
-  X,
   ChevronRight,
   Sparkles,
 } from "lucide-react";
