@@ -243,6 +243,7 @@ export default function Testimonials() {
               <button
                 onClick={handlePrev}
                 disabled={!hasPrev || isAnimating}
+                aria-label="Previous testimonials" 
                 className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full border flex items-center justify-center transition-all duration-300 ${
                   hasPrev && !isAnimating
                     ? "border-foreground/30 text-foreground hover:bg-foreground/5 hover:border-foreground/50"
@@ -254,6 +255,7 @@ export default function Testimonials() {
               <button
                 onClick={handleNext}
                 disabled={!hasNext || isAnimating}
+                aria-label="Next testimonials" 
                 className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full border flex items-center justify-center transition-all duration-300 ${
                   hasNext && !isAnimating
                     ? "border-foreground/30 text-foreground hover:bg-foreground/5 hover:border-foreground/50"
