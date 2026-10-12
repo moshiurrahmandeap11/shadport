@@ -94,6 +94,7 @@ export default function WhyChooseMe() {
     <section
       ref={sectionRef}
       id="about"
+      aria-label="About Me and Why Choose Me"
       className="relative py-20 sm:py-28 lg:py-36 bg-background px-4 sm:px-6 lg:px-8 overflow-hidden"
     >
       {/* Top label */}
