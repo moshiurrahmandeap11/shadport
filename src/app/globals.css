@@ -81,10 +81,11 @@ html.dark {
   top: 0;
 }
 
-/* Focus visible styles */
+/* Focus visible styles with high-contrast accessibility support */
 :focus-visible {
   outline: 2px solid #f97316;
   outline-offset: 2px;
+  transition: outline-offset 0.15s ease;
 }
 
 /* Reduced motion support */
