@@ -10,6 +10,7 @@ import {
   Eye,
 } from "lucide-react";
 import { useBlogs } from "@/lib/hooks";
+import { Blog } from "@/lib/blogs";
 import StatsChart from "@/components/admin/StatsChart";
 
 export default function AdminDashboardPage() {
@@ -135,7 +136,7 @@ export default function AdminDashboardPage() {
           </div>
         ) : (
           <div className="divide-y divide-[#1f2937]/40">
-            {blogs.slice(0, 5).map((blog: any) => (
+            {blogs.slice(0, 5).map((blog: Blog) => (
               <Link
                 key={blog._id}
                 href={`/admin/moshiur/blogs/edit/${blog._id}`}
