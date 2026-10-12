@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import {
   FileText,
   Mail,
@@ -144,7 +145,7 @@ export default function AdminDashboardPage() {
               >
                 <div className="w-12 h-12 rounded-lg bg-[#1f2937] flex items-center justify-center flex-shrink-0 overflow-hidden">
                   {blog.thumbnail?.url ? (
-                    <img src={blog.thumbnail.url} alt="" className="w-full h-full object-cover" />
+                    <Image src={blog.thumbnail.url} alt={blog.title} width={48} height={48} className="w-full h-full object-cover" />
                   ) : (
                     <FileText className="w-5 h-5 text-gray-600" />
                   )}
