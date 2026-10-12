@@ -143,6 +143,8 @@ export default function HeroBanner() {
               <a
                 href={process.env.NEXT_PUBLIC_RESUME_URL || "/resume.pdf"}
                 download
+                title="Download Moshiur Rahman DEAP Resume"
+                aria-label="Download Resume (PDF)"
                 className="group inline-flex items-center gap-2 rounded-full border border-foreground/20 px-6 py-3 sm:px-8 sm:py-3.5 text-sm sm:text-base font-semibold text-foreground transition-all hover:bg-foreground/5 hover:border-foreground/40"
               >
                 <svg
@@ -191,7 +193,7 @@ export default function HeroBanner() {
               { name: "GitHub", icon: "GH", href: "https://github.com/moshiurrahmandeap11" },
               { name: "LinkedIn", icon: "in", href: "https://linkedin.com/in/moshiurrahmandeap" },
               { name: "Instagram", icon: "IG", href: "https://instagram.com/__moshiur.rahman.deap" },
-              { name: "Email", icon: "@", href: "mailto:moshiurrahmandeap@gmail.com" },
+              { name: "Email", icon: "@", href: "mailto:hello@moshiur.pro" },
             ].map((social) => (
               <motion.a
                 key={social.name}
