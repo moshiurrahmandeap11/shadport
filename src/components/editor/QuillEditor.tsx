@@ -5,7 +5,11 @@ import { useEffect, useRef, useState, forwardRef, useImperativeHandle } from "re
 // Import Quill CSS
 import "quill/dist/quill.snow.css";
 
-type QuillType = any;
+interface QuillInstance {
+  root: HTMLElement;
+  on: (event: string, callback: () => void) => void;
+}
+type QuillType = QuillInstance | null;
 
 export interface QuillEditorRef {
   getContent: () => string;
