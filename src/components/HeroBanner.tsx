@@ -120,14 +120,14 @@ export default function HeroBanner() {
               Designing digital products that are clear, usable, and conversion focused.
               Building immersive web experiences with modern technologies.
             </p>
-            <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
+            <div className="flex flex-row items-center justify-center lg:justify-start gap-2.5 sm:gap-4">
               <Link
                 href="/#contact"
-                className="group inline-flex items-center gap-2 rounded-full bg-foreground px-6 py-3 sm:px-8 sm:py-3.5 text-sm sm:text-base font-semibold text-background shadow-lg transition-all hover:shadow-xl hover:scale-105"
+                className="group inline-flex items-center gap-2 rounded-full bg-foreground px-4 py-2.5 sm:px-8 sm:py-3.5 text-xs sm:text-base font-semibold text-background shadow-lg transition-all hover:shadow-xl hover:scale-105 whitespace-nowrap"
               >
                 <span>Let&apos;s collaborate</span>
                 <svg
-                  className="w-4 h-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1"
+                  className="w-3.5 h-3.5 sm:w-4 sm:h-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -145,10 +145,10 @@ export default function HeroBanner() {
                 download
                 title="Download Moshiur Rahman DEAP Resume"
                 aria-label="Download Resume (PDF)"
-                className="group inline-flex items-center gap-2 rounded-full border border-foreground/20 px-6 py-3 sm:px-8 sm:py-3.5 text-sm sm:text-base font-semibold text-foreground transition-all hover:bg-foreground/5 hover:border-foreground/40"
+                className="group inline-flex items-center gap-2 rounded-full border border-foreground/20 px-4 py-2.5 sm:px-8 sm:py-3.5 text-xs sm:text-base font-semibold text-foreground transition-all hover:bg-foreground/5 hover:border-foreground/40 whitespace-nowrap"
               >
                 <svg
-                  className="w-4 h-4"
+                  className="w-3.5 h-3.5 sm:w-4 sm:h-4"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
