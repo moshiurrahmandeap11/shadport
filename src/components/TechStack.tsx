@@ -92,7 +92,7 @@ export default function TechStack() {
       </div>
 
       {/* Progress bar */}
-      <div className="mt-2 sm:mt-3 lg:mt-4 h-[3px] sm:h-1 rounded-full bg-foreground/10 overflow-hidden">
+      <div className="mt-2 sm:mt-3 lg:mt-4 h-[3px] sm:h-1 rounded-full bg-foreground/10 overflow-hidden" role="progressbar" aria-valuenow={parseInt(tech.percent)} aria-valuemin={0} aria-valuemax={100} aria-label={`${tech.name} proficiency level: ${tech.percent}`}>
         <motion.div
           className="h-full rounded-full"
           style={{ backgroundColor: tech.color }}
