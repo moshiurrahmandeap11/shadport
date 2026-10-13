@@ -3,7 +3,6 @@
 import { useRef, useEffect, useState, useCallback } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import Image from "next/image";
 import { feedbacks } from "@/lib/reviews";
 import { Star, ChevronLeft, ChevronRight, Quote } from "lucide-react";
 import { useHydrated } from "@/lib/use-hydrated";
@@ -215,24 +214,13 @@ export default function Testimonials() {
                   </div>
 
                   {/* User info */}
-                  <div className="flex items-center gap-3 mt-4 pt-4 border-t border-foreground/5 flex-shrink-0">
-                    <div className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden border border-foreground/10 flex-shrink-0">
-                      <Image
-                        src={review.avatar}
-                        alt={review.name}
-                        fill
-                        className="object-cover"
-                        sizes="40px"
-                      />
-                    </div>
-                    <div className="min-w-0">
-                      <p className="text-sm font-semibold text-foreground truncate">
-                        {review.name}
-                      </p>
-                      <p className="text-xs text-foreground/50">
-                        {review.platform}
-                      </p>
-                    </div>
+                  <div className="mt-4 pt-4 border-t border-foreground/5 flex-shrink-0">
+                    <p className="text-sm font-semibold text-foreground truncate">
+                      {review.name}
+                    </p>
+                    <p className="text-xs text-foreground/50">
+                      {review.platform}
+                    </p>
                   </div>
                 </div>
               ))}
