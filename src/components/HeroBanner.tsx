@@ -6,6 +6,14 @@ import gsap from "gsap";
 import Image from "next/image";
 import Link from "next/link";
 import { useHydrated } from "@/lib/use-hydrated";
+import { FaGithub, FaLinkedin, FaInstagram, FaEnvelope } from "react-icons/fa6";
+
+const socialLinks = [
+  { name: "GitHub", icon: FaGithub, href: "https://github.com/moshiurrahmandeap11" },
+  { name: "LinkedIn", icon: FaLinkedin, href: "https://linkedin.com/in/moshiurrahmandeap" },
+  { name: "Instagram", icon: FaInstagram, href: "https://instagram.com/__moshiur.rahman.deap" },
+  { name: "Email", icon: FaEnvelope, href: "mailto:hello@moshiur.pro" },
+];
 
 export default function HeroBanner() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -195,42 +203,42 @@ export default function HeroBanner() {
           {/* Right: Socials */}
           <motion.div
             ref={rightContentRef}
-            className="order-3 lg:order-3 flex flex-col gap-3 sm:gap-4 items-center lg:items-end"
+            className="order-3 lg:order-3 flex flex-row lg:flex-col gap-3 sm:gap-4 items-center justify-center lg:items-end w-full lg:w-auto mt-2 sm:mt-4 lg:mt-0"
           >
-            {[
-              { name: "GitHub", icon: "GH", href: "https://github.com/moshiurrahmandeap11" },
-              { name: "LinkedIn", icon: "in", href: "https://linkedin.com/in/moshiurrahmandeap" },
-              { name: "Instagram", icon: "IG", href: "https://instagram.com/__moshiur.rahman.deap" },
-              { name: "Email", icon: "@", href: "mailto:hello@moshiur.pro" },
-            ].map((social) => (
-              <motion.a
-                key={social.name}
-                href={social.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group flex items-center gap-3 rounded-full border border-foreground/10 bg-background/50 backdrop-blur-sm px-4 py-2.5 sm:px-5 sm:py-3 text-sm font-medium text-foreground transition-all hover:bg-foreground/5 hover:border-foreground/20 hover:scale-105 w-full sm:w-auto lg:w-44 justify-center lg:justify-start"
-                whileHover={{ x: -5 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <span className="flex h-5 w-5 sm:h-6 sm:w-6 items-center justify-center rounded-full bg-foreground/10 text-[10px] sm:text-xs font-bold">
-                  {social.icon}
-                </span>
-                <span>{social.name}</span>
-                <svg
-                  className="w-3 h-3 ml-auto opacity-0 group-hover:opacity-100 transition-all group-hover:translate-x-1 group-hover:-translate-y-1"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2.5}
+            {socialLinks.map((social) => {
+              const Icon = social.icon;
+              return (
+                <motion.a
+                  key={social.name}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title={social.name}
+                  aria-label={social.name}
+                  className="group flex items-center justify-center lg:justify-start gap-3 rounded-full border border-foreground/10 bg-background/50 backdrop-blur-sm w-11 h-11 sm:w-12 sm:h-12 lg:w-44 lg:h-auto lg:px-5 lg:py-3 text-sm font-medium text-foreground transition-all hover:bg-foreground/5 hover:border-foreground/20 hover:scale-105"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M7 17L17 7M17 7H7M17 7v10"
-                  />
-                </svg>
-              </motion.a>
-            ))}
+                  <span className="flex h-5 w-5 sm:h-6 sm:w-6 items-center justify-center rounded-full lg:bg-foreground/10 text-foreground">
+                    <Icon className="w-4 h-4 sm:w-4.5 sm:h-4.5 lg:w-3.5 lg:h-3.5" />
+                  </span>
+                  <span className="hidden lg:inline">{social.name}</span>
+                  <svg
+                    className="w-3 h-3 ml-auto hidden lg:block opacity-0 group-hover:opacity-100 transition-all group-hover:translate-x-1 group-hover:-translate-y-1"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2.5}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M7 17L17 7M17 7H7M17 7v10"
+                    />
+                  </svg>
+                </motion.a>
+              );
+            })}
           </motion.div>
         </div>
       </div>
