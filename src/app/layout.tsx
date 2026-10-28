@@ -7,6 +7,7 @@ import { Providers } from "./providers";
 import { Toaster } from "react-hot-toast";
 import PageTransition from "@/components/PageTransition";
 import { HydrationGuard } from "@/components/HydrationGuard";
+import Script from 'next/script';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -228,6 +229,11 @@ export default function RootLayout({
             <main id="main-content" className="pt-16">
               <PageTransition>
                 {children}
+                        <Script
+          src="https://api.labtoai.com/widget.js"
+          data-api-key="aiw_live_37164973bbf7d67b267e8dc7d9e9f0da58d97a3d5ad7478e"
+          strategy="afterInteractive"
+        />
               </PageTransition>
             </main>
             <Toaster
