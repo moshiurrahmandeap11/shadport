@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import HeroBanner from "@/components/HeroBanner";
+import ShowreelVideo from "@/components/ShowreelVideo";
 import HighlightText from "@/components/HighlightText";
 import WorkProcess from "@/components/WorkProcess";
 import WhyChooseMe from "@/components/WhyChooseMe";
@@ -142,6 +143,7 @@ export default function Home() {
       />
       <div className="flex flex-col flex-1 bg-background font-sans">
         <HeroBanner />
+        <ShowreelVideo />
         <HighlightText />
         <WorkProcess />
         <WhyChooseMe />

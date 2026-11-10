@@ -73,8 +73,12 @@ export function AdminProvider({ children }: { children: ReactNode }) {
       const until = parseInt(lockoutUntil, 10);
       const now = Date.now();
       if (until > now) {
-        setIsLocked(true);
-        setLockoutTimeLeft(Math.ceil((until - now) / 1000));
+        queueMicrotask(() => {
+          setIsLocked(true);
+
+          setLockoutTimeLeft(Math.ceil((until - now) / 1000));
+        });
+
       } else {
         localStorage.removeItem("admin_lockout_until");
         localStorage.removeItem("admin_attempts");
@@ -87,7 +91,9 @@ export function AdminProvider({ children }: { children: ReactNode }) {
       try {
         const session = JSON.parse(stored);
         if (verifyToken(session.token)) {
-          setAdmin(session);
+          queueMicrotask(() => {
+            setAdmin(session);
+          });
         } else {
           localStorage.removeItem("admin_session");
         }
@@ -99,10 +105,14 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     // Check stored attempts
     const storedAttempts = localStorage.getItem("admin_attempts");
     if (storedAttempts) {
-      setAttempts(parseInt(storedAttempts, 10));
+      queueMicrotask(() => {
+        setAttempts(parseInt(storedAttempts, 10));
+      });
     }
 
-    setIsLoading(false);
+    queueMicrotask(() => {
+      setIsLoading(false);
+    });
   }, []);
 
   // Countdown timer for lockout

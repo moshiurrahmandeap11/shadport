@@ -25,9 +25,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
     <QueryClientProvider client={queryClient}>
       <NextThemesProvider
         attribute="class"
-        defaultTheme="system"
-        enableSystem
-        disableTransitionOnChange
+        defaultTheme="light"
+        enableSystem={false}
+        storageKey="moshiur_theme"
       >
         <AdminProvider>
           {children}

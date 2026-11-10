@@ -137,7 +137,7 @@ export default function ContactsPage() {
           </div>
         ) : (
           <div className="divide-y divide-[#1f2937]/40">
-            {filteredContacts.map((contact: any) => (
+            {filteredContacts.map((contact: ContactItem) => (
               <div
                 key={contact._id}
                 className={`p-5 hover:bg-[#1f2937]/30 transition-colors ${
